@@ -9,7 +9,7 @@ class DynaMaze(GridWorldEnv):
         super().__init__(start_state, goal_state, n_rows, n_cols)
         self.obstacles = []
     
-    def get_reward(self, s: tuple[int, int] | None) -> float:
+    def get_reward(self, s):
         if self.is_terminal(s): return 1.0
         return 0.0
 
@@ -19,11 +19,11 @@ class DynaMaze(GridWorldEnv):
     column (move vertically). Also both must be valid positions.
 
     Args:
-        Start pos (tuple): the starting position of the wall
-        End pos (tuple): the last position of the wall
+        Start pos (tuple of ints): the starting position of the wall
+        End pos (tuple of ints): the last position of the wall
 
     """
-    def add_wall(self, start_pos: tuple[int, int], end_pos: tuple[int, int]) -> None:
+    def add_wall(self, start_pos, end_pos):
         assert start_pos[0] == end_pos[0] or start_pos[1] == end_pos[1], "Start pos must have the same column or row with end pos."
 
         start_pos = np.array(start_pos)
@@ -49,8 +49,15 @@ class DynaMaze(GridWorldEnv):
     """Overrides the step function of the GridWorldEnv. The agent moves the same way
     with the difference of having an obstacle. Move as in the GridWorldEnv and if it
     hits an obstacle, then the new state is the same as the previous one.
+
+    Args:
+        action (int): the action chosen by the agent 
+    Returns:
+        State (tuple of ints): the new state after taking the action
+        Reward (float): the reward by moving to the new state
+        Is terminal (bool): true iff the new state is a terminal one
     """
-    def step(self, action: int) -> tuple[tuple[int, int], float, bool]:
+    def step(self, action):
         state = self._get_obs()
         next_state, _, _ = super().step(action)
 
