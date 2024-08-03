@@ -9,34 +9,14 @@ class DynaMaze(GridWorldEnv):
         super().__init__(env_args)
         self.iter_change = env_args.get('iter_change', 10000)
         self.iter = 0
-        self.obstacles = set([])
+        
+        self.obstacles = set(map(tuple, env_args.get('obstacles', [])))
+        self.obstacles_after_change = set(map(tuple, env_args.get('obstacles_after_change', [])))
     
     def get_reward(self, s):
         if self.is_terminal(s): return 1.0
         return 0.0
     
-    def add_obstacles(self, obstacles):
-        """Adds all the obstacles in the input to the global obstacles list and also sets
-        the value of the grid to 1.
-
-        Args:
-            obstacles (list of tuples/2-item lists): the obstacles to be added
-        """
-        obstacles = set(map(tuple, obstacles))
-        self.edit_grid_values(list(obstacles), [1]*len(obstacles))
-        self.obstacles = self.obstacles.union(obstacles)
-
-    def remove_obstacles(self, obstacles):
-        """Iterates the obstacles input and removes each one from the global obstacles list
-        and also sets the value of the grid to 0.
-
-        Args:
-            obstacles (list of tuples/2-item lists): the obstacles to be removed 
-        """
-        obstacles = set(map(tuple, obstacles))
-        self.edit_grid_values(list(obstacles), [0]*len(obstacles))
-        self.obstacles = self.obstacles.difference(obstacles)
-
     def step(self, action):
         """Overrides the step function of the GridWorldEnv. The agent moves the same way
         with the difference of having an obstacle. Move as in the GridWorldEnv and if it
@@ -51,8 +31,7 @@ class DynaMaze(GridWorldEnv):
         """
         self.iter += 1
         if self.iter == self.iter_change:
-            self.add_obstacles([(3,8)])
-            self.remove_obstacles([(3,0)])
+            self.obstacles = self.obstacles_after_change
         
         prev_s = self._agent_location
         s, _, _ = super().step(action)

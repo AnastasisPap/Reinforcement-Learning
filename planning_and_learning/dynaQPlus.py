@@ -33,7 +33,7 @@ class DynaQPlusAgent(DynaQAgent):
 
         return next_s, is_terminal, r
 
-def experiment_8_2(env_class, agent_class, env_info, agent_info, exp_parameters):
+def experiment(env_class, agent_class, env_info, agent_info, exp_parameters):
     num_runs = exp_parameters['num_runs']
     num_max_steps = exp_parameters['num_max_steps']
     cum_reward_all = np.zeros((num_runs, num_max_steps))
@@ -41,7 +41,6 @@ def experiment_8_2(env_class, agent_class, env_info, agent_info, exp_parameters)
     for run in tqdm(range(num_runs)):
         agent_info['seed'] = run
         env = env_class(env_info)
-        env.add_obstacles([(3, i) for i in range(8)])
 
         agent = agent_class(env, agent_info)
 
@@ -63,12 +62,15 @@ def experiment_8_2(env_class, agent_class, env_info, agent_info, exp_parameters)
 
 if __name__ == '__main__':
     experiment_args = {'num_runs' : 10, 'num_max_steps' : 3000}
-    environment_args = {'iter_change': 1000, 'start_state': (5, 3)}
+    environment_args = {
+        'iter_change': 1000, 'start_state': (5, 3),
+        'obstacles': [(3, i) for i in range(8)],
+        'obstacles_after_change': [(3, i) for i in range(1, 9)]}
     agent_args = {'epsilon': 0.1, 'alpha' : 0.5, 'gamma': 0.95, 'n' : 50}
 
     agents_cum_rewards = []
-    agents_cum_rewards.append(experiment_8_2(DynaMaze, DynaQAgent, environment_args, agent_args, experiment_args))
-    agents_cum_rewards.append(experiment_8_2(DynaMaze, DynaQPlusAgent, environment_args, agent_args, experiment_args))
+    agents_cum_rewards.append(experiment(DynaMaze, DynaQAgent, environment_args, agent_args, experiment_args))
+    agents_cum_rewards.append(experiment(DynaMaze, DynaQPlusAgent, environment_args, agent_args, experiment_args))
 
     plot_results(
         np.arange(1, experiment_args['num_max_steps'] + 1),
@@ -76,5 +78,5 @@ if __name__ == '__main__':
         x_label='Time steps',
         y_label='Cumulative rewards',
         labels=['Dyna-Q', 'Dyna-Q+'],
-        file_path='./libs/graphs/results/dynaQplus_maze.png'
+        file_path='./libs/graphs/results/dynaQplus_maze_8_2.png'
     )
