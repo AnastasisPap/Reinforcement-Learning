@@ -1,9 +1,6 @@
 import numpy as np
 from libs.utils.agent import BaseAgent
-from libs.envs.dyna_maze import DynaMaze
-from libs.utils.graphing import plot_results
 from planning_and_learning.model import Model
-from tqdm import tqdm
 
 class DynaQAgent(BaseAgent):
     def __init__(self, env, args):
@@ -42,66 +39,3 @@ class DynaQAgent(BaseAgent):
         self.planning()
         
         return next_s, is_terminal, r
-    
-def experiment(env_args, agent_args, experiment_args):
-    """Completes the experiment. To properly calculate the number of steps required to complete
-    the episode, multiple iterations are used and then averaged. For each iteration, multiple
-    episodes are used. At the start of each new run, the agent is reset, while the env is
-    reset every new episode.
-
-    Args:
-        Agent (DynaQAgent): the learning agent
-        Episodes (int): number of episodes per iteration
-        Repetitions (int): the number of repetitions for the experiment
-    Returns:
-        Average number of steps per episode (np.array): has shape of (repetitions, episodes)
-        and the value at index i, j is the number of steps, for iteration number i, for the
-        j-th episode to finish.
-    """
-    repetitions = experiment_args['repetitions']
-    episodes = experiment_args['episodes']
-
-    avg_steps_per_episode = np.zeros((repetitions, episodes))
-    for rep in tqdm(range(repetitions)):
-        env = DynaMaze(env_args)
-        agent_args['seed'] = rep
-        agent = DynaQAgent(env, agent_args)
-
-        for ep in range(episodes):
-            # Reset the environment (move agent to the start)
-            # Gymnasium requires this step is called at the start of each episode
-            s = env.reset()
-            terminated = False
-            curr_steps = 0
-
-            while not terminated:
-                s, terminated, _ = agent.step(s)
-                curr_steps += 1
-            avg_steps_per_episode[rep][ep] = curr_steps
-
-    # [1:] because the first episode is the same for all values of n
-    return np.mean(avg_steps_per_episode, axis=0)[1:]
-
-if __name__ == '__main__':
-    # The environment, values, etc. are taken from the example 8.1 in the intro to RL book (Barto & Sutton)
-    n_values = [0, 5, 50]
-
-    experiment_args = {'episodes': 50, 'repetitions': 30}
-    num_of_steps = np.zeros((len(n_values), experiment_args['episodes']-1))
-    agent_args = {'n': 0, 'gamma': 0.95, 'alpha': 0.1, 'epsilon': 0.1}
-    env_args = {
-        'iter_change': 100000000, 'start_state': (2, 0), 'goal_state': (0, 8),
-        'obstacles': [(i, 2) for i in range(1, 4)] + [(i, 7) for i in range(0, 3)] + [(4,5)]
-        }
-
-    for i, n in enumerate(n_values):
-        agent_args['n'] = n
-        num_of_steps[i] = experiment(env_args, agent_args, experiment_args)
-
-    plot_results(
-        np.arange(2, experiment_args['episodes'] + 1),
-        num_of_steps,
-        'Episodes',
-        'Steps per Episode',
-        [f'n={n}' for n in n_values],
-        './libs/graphs/results/dynaQ_maze.png')

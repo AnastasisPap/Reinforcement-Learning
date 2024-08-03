@@ -1,8 +1,5 @@
 import numpy as np
-from libs.envs.dyna_maze import DynaMaze
-from libs.utils.graphing import plot_results
 from planning_and_learning.dynaQ import DynaQAgent
-from tqdm import tqdm
 
 class DynaQPlusAgent(DynaQAgent):
     def __init__(self, env, agent_args):

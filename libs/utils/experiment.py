@@ -8,13 +8,14 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
     reset every new episode.
 
     Args:
-        Agent (DynaQAgent): the learning agent
-        Episodes (int): number of episodes per iteration
-        Repetitions (int): the number of repetitions for the experiment
+        EnvClass (gymnasium.Env): the environment class
+        AgentClass (BaseAgent): the learning agent class
+        env_args (dict): the arguments for the environment
+        agent_args (dict): the arguments for the agent
+        experiment_args (dict): the arguments for the experiment
     Returns:
-        Average number of steps per episode (np.array): has shape of (repetitions, episodes)
-        and the value at index i, j is the number of steps, for iteration number i, for the
-        j-th episode to finish.
+        Data (dict): the data collected during the experiment, currently only the average steps
+        per episode and the cumulative reward
     """
     repetitions = experiment_args.get('repetitions', 1)
     episodes = experiment_args.get('episodes', 100000)
