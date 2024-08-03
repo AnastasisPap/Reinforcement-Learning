@@ -5,46 +5,37 @@ from libs.envs.grid_world import GridWorldEnv
 import numpy as np
 
 class DynaMaze(GridWorldEnv):
-    def __init__(self, start_state, goal_state, n_rows=6, n_cols=9):
-        super().__init__(start_state, goal_state, n_rows, n_cols)
-        self.obstacles = []
+    def __init__(self, env_args):
+        super().__init__(env_args)
+        self.iter_change = env_args.get('iter_change', 10000)
+        self.iter = 0
+        self.obstacles = set([])
     
     def get_reward(self, s):
         if self.is_terminal(s): return 1.0
         return 0.0
-
-    """Adds a wall (obstacle) to the environment. If an agent moves towards an obstacle,
-    it stays in the same position. From start pos until end pos, the grid will have value of 1.
-    It's required that start pos and end pos either have the same row (move horizontally) or
-    column (move vertically). Also both must be valid positions.
+    
+    """Adds all the obstacles in the input to the global obstacles list and also sets
+    the value of the grid to 1.
 
     Args:
-        Start pos (tuple of ints): the starting position of the wall
-        End pos (tuple of ints): the last position of the wall
-
+        obstacles (list of tuples/2-item lists): the obstacles to be added
     """
-    def add_wall(self, start_pos, end_pos):
-        assert start_pos[0] == end_pos[0] or start_pos[1] == end_pos[1], "Start pos must have the same column or row with end pos."
+    def add_obstacles(self, obstacles):
+        obstacles = set(map(tuple, obstacles))
+        self.edit_grid_values(list(obstacles), [1]*len(obstacles))
+        self.obstacles = self.obstacles.union(obstacles)
 
-        start_pos = np.array(start_pos)
-        end_pos = np.array(end_pos)
+    """Iterates the obstacles input and removes each one from the global obstacles list
+    and also sets the value of the grid to 0.
 
-        step = 1 - (start_pos == end_pos) # Determines whether to move horizontally or vertically
-        direction = np.sign(end_pos - start_pos) # Determines the direction to move (e.g. move up/down or left/right)
-        step *= direction
-
-        curr_pos = start_pos
-
-        # Add each state to the obstacles list and update the grid
-        self.obstacles.append(tuple(curr_pos))
-        if self.is_valid_state(curr_pos):
-            self.grid[tuple(curr_pos)] = 1
-        while not np.array_equal(curr_pos, end_pos):
-            curr_pos += step
-            self.obstacles.append(tuple(curr_pos))
-            
-            if self.is_valid_state(curr_pos):
-                self.grid[tuple(curr_pos)] = 1
+    Args:
+        obstacles (list of tuples/2-item lists): the obstacles to be removed 
+    """
+    def remove_obstacles(self, obstacles):
+        obstacles = set(map(tuple, obstacles))
+        self.edit_grid_values(list(obstacles), [0]*len(obstacles))
+        self.obstacles = self.obstacles.difference(obstacles)
 
     """Overrides the step function of the GridWorldEnv. The agent moves the same way
     with the difference of having an obstacle. Move as in the GridWorldEnv and if it
@@ -58,12 +49,13 @@ class DynaMaze(GridWorldEnv):
         Is terminal (bool): true iff the new state is a terminal one
     """
     def step(self, action):
-        state = self._get_obs()
-        next_state, _, _ = super().step(action)
+        self.iter += 1
+        if self.iter == self.iter_change:
+            self.add_obstacles([(3,8)])
+            self.remove_obstacles([(3,0)])
+        
+        prev_s = self._agent_location
+        s, _, _ = super().step(action)
+        if tuple(s) in self.obstacles: self._agent_location = prev_s
 
-        if next_state in self.obstacles:
-            self._agent_location = np.array(state)
-            self.grid[next_state] = 1
-            self.grid[state] = 2
-
-        return self._get_obs(), self.get_reward(next_state), self.is_terminal(next_state)
+        return self._get_obs(), self.get_reward(self._agent_location), self.is_terminal(self._agent_location)

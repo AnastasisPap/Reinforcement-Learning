@@ -3,27 +3,21 @@ from gymnasium import spaces
 import numpy as np
 
 class GridWorldEnv(gym.Env):
-    def __init__(
-            self,
-            start_state,
-            goal_state,
-            n_rows=5,
-            n_cols=10):
-        self.width = n_cols
-        self.height = n_rows
+    def __init__(self, env_args):
+        self.width = env_args.get('n_cols', 9)
+        self.height = env_args.get('n_rows', 6)
         # The grid shows the position of each entity
         # 0: empty, 1: obstacle, 2: agent, 3: goal
-        self.grid = np.zeros((n_rows, n_cols), dtype=int)
-        self.grid[goal_state] = 3
-        self.start_state = start_state
-        self.goal_state = goal_state 
+        self.grid = np.zeros((self.height, self.width), dtype=int)
+        self.start_state = env_args.get('start_state', (2, 0))
+        self.goal_state = env_args.get('goal_state', (0, 8))
 
         self.action_space = spaces.Discrete(4)
         self._action_to_direction = {
             0: np.array([-1, 0]),
-            1: np.array([1, 0]),
-            2: np.array([0, -1]),
-            3: np.array([0, 1])
+            1: np.array([0, 1]),
+            2: np.array([1, 0]),
+            3: np.array([0, -1])
         }
         self._action_to_name = {0: 'up', 1: 'down', 2: 'left', 3: 'right'}
 
@@ -55,8 +49,13 @@ class GridWorldEnv(gym.Env):
         self.grid[np.where(self.grid == 2)] = 0
 
         self.grid[self.start_state] = 2
-
-        return self.start_state
+        self.grid[self.goal_state] = 3
+        return self._get_obs()
+    
+    def edit_grid_values(self, positions, values):
+        assert len(positions) == len(values), "The number of positions and values must be the same"
+        for i in range(len(positions)):
+            self.grid[positions[i]] = values[i]
     
     """Step is the main interaction between the agent and the environment.
     The agent chooses an action to perform in the environment, which then
@@ -78,8 +77,7 @@ class GridWorldEnv(gym.Env):
 
         # Update the grid
         if self.is_valid_state(state):
-            self.grid[self._get_obs()] = 0
-            self.grid[tuple(state)] = 2
+            self.edit_grid_values([self._get_obs(), tuple(state)], [0, 2])
         self._agent_location = state
 
         return self._get_obs(), self.get_reward(state), self.is_terminal(state)

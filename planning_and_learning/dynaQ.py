@@ -14,24 +14,16 @@ class DynaQAgent:
         args: dictionary mapping name (str) -> value (int or float)
     """
     def __init__(self, env, args):
-        self.epsilon = args['epsilon']
-        self.gamma = args['gamma']
-        self.alpha = args['alpha']
-        self.n = args['n']
+        self.epsilon = args.get('epsilon', 0.1)
+        self.gamma = args.get('gamma', 0.95)
+        self.alpha = args.get('alpha', 0.1)
+        self.n = args.get('n', 10)
         self.env = env
-    
-    """Resets variables of the agent. This is called each time we do a new
-    run.
 
-    Args:
-        The random seed (int) which will be used for the epsilon-greedy and
-        sampling from the model
-    """
-    def reset(self, seed=42):
-        self.model = Model(env, seed)
-        self.rnd_gen = np.random.RandomState(seed)
+        self.rnd_gen = np.random.RandomState(args.get('seed', 0))
         self.Q = np.zeros((self.env.height, self.env.width, self.env.action_space.n))
-    
+        self.model = Model(env, self.rnd_gen)
+
     """It's the epsilon greedy policy. With probability epsilon selects any action
     randomly with the same probability, and with prob 1-epsilon, greedily selects
     the action and breaks ties arbitrarily.
@@ -77,7 +69,7 @@ class DynaQAgent:
 
         self.planning()
         
-        return next_s, is_terminal
+        return next_s, is_terminal, r
     
 """Completes the experiment. To properly calculate the number of steps required to complete
 the episode, multiple iterations are used and then averaged. For each iteration, multiple
@@ -93,21 +85,27 @@ Returns:
     and the value at index i, j is the number of steps, for iteration number i, for the
     j-th episode to finish.
 """
-def experiment(agent, episodes=50, repetitions=30):
+def experiment(env_args, agent_args, experiment_args):
+    repetitions = experiment_args['repetitions']
+    episodes = experiment_args['episodes']
+
     avg_steps_per_episode = np.zeros((repetitions, episodes))
     for rep in tqdm(range(repetitions)):
-        # Reset the agent (resets Q values, uses new Random Generator)
-        agent.reset(rep)
+        env = DynaMaze(env_args)
+        env.add_obstacles([(i, 2) for i in range(1, 4)] + [(i, 7) for i in range(0, 3)] + [(4,5)])
+        agent_args['seed'] = rep
+        agent = DynaQAgent(env, agent_args)
+
         for ep in range(episodes):
             # Reset the environment (move agent to the start)
             # Gymnasium requires this step is called at the start of each episode
-            s = agent.env.reset()
+            s = env.reset()
             terminated = False
             curr_steps = 0
 
             while not terminated:
+                s, terminated, _ = agent.step(s)
                 curr_steps += 1
-                s, terminated = agent.step(s)
             avg_steps_per_episode[rep][ep] = curr_steps
 
     # [1:] because the first episode is the same for all values of n
@@ -115,23 +113,19 @@ def experiment(agent, episodes=50, repetitions=30):
 
 if __name__ == '__main__':
     # The environment, values, etc. are taken from the example 8.1 in the intro to RL book (Barto & Sutton)
-    env = DynaMaze(start_state=(2, 0), goal_state=(0, 8))
-    env.add_wall((1, 2), (3, 2))
-    env.add_wall((4, 5), (4, 5))
-    env.add_wall((0, 7), (2, 7))
     n_values = [0, 5, 50]
-    episodes = 50
-    repetitions = 30
-    num_of_steps = np.zeros((len(n_values), episodes-1))
-    args = {'n': 0, 'gamma': 0.95, 'alpha': 0.1, 'epsilon': 0.1}
+
+    experiment_args = {'episodes': 50, 'repetitions': 30}
+    num_of_steps = np.zeros((len(n_values), experiment_args['episodes']-1))
+    agent_args = {'n': 0, 'gamma': 0.95, 'alpha': 0.1, 'epsilon': 0.1}
+    env_args = {'iter_change': 100000000, 'start_state': (2, 0), 'goal_state': (0, 8)}
 
     for i, n in enumerate(n_values):
-        args['n'] = n
-        agent = DynaQAgent(env, args)
-        num_of_steps[i] = experiment(agent, episodes, repetitions)
+        agent_args['n'] = n
+        num_of_steps[i] = experiment(env_args, agent_args, experiment_args)
 
     plot_results(
-        np.arange(2, episodes + 1),
+        np.arange(2, experiment_args['episodes'] + 1),
         num_of_steps,
         'Episodes',
         'Steps per Episode',

@@ -6,11 +6,11 @@ class Model:
         Env (Gymnasium Env)
         Seed (int)
     """
-    def __init__(self, env, seed):
+    def __init__(self, env, rnd_gen):
         self.model = {}
         # To avoid random anomalities, we use a random seed for the same
         # episodes
-        self.rnd_gen = np.random.RandomState(seed)
+        self.rnd_gen = rnd_gen
         self.env = env
     
     """Updates the model in which when the agent interacted with the environment
@@ -24,7 +24,10 @@ class Model:
         r (float): observed reward
     """
     def update(self, s, a, r, next_s):
-        if s not in self.model: self.model[s] = {}
+        if s not in self.model:
+            self.model[s] = {}
+            for new_a in range(self.env.action_space.n):
+                self.model[s][new_a] = (s, 0)
         self.model[s][a] = (next_s, r)
     
     """Randomly selects an observed (non-terminal) state s, and a randomly observed action a
@@ -35,13 +38,11 @@ class Model:
         a (int): random observed action when in state s
     """
     def sample(self):
-        states = list(self.model.keys())
-        s_random = states[self.rnd_gen.randint(len(states))]
-        while self.env.is_terminal(s_random):
-            s_random = states[self.rnd_gen.randint(len(states))]
+        s_keys = list(self.model.keys())
+        s_random = s_keys[self.rnd_gen.randint(len(s_keys))]
 
-        actions = list(self.model[s_random].keys())
-        a_random = actions[self.rnd_gen.randint(len(actions))]
+        a_keys = list(self.model[s_random].keys())
+        a_random = a_keys[self.rnd_gen.randint(len(a_keys))]
 
         return s_random, a_random
     
