@@ -2,7 +2,7 @@ import sys, os
 sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 
 import numpy as np
-from libs.utils.agent import BaseAgent
+from libs.base_classes.agent import BaseAgent
 from libs.envs.dyna_maze import DynaMaze
 from libs.graphs.graphing import plot_results
 from planning_and_learning.model import Model
@@ -67,7 +67,6 @@ def experiment(env_args, agent_args, experiment_args):
     avg_steps_per_episode = np.zeros((repetitions, episodes))
     for rep in tqdm(range(repetitions)):
         env = DynaMaze(env_args)
-        env.add_obstacles([(i, 2) for i in range(1, 4)] + [(i, 7) for i in range(0, 3)] + [(4,5)])
         agent_args['seed'] = rep
         agent = DynaQAgent(env, agent_args)
 
@@ -93,7 +92,10 @@ if __name__ == '__main__':
     experiment_args = {'episodes': 50, 'repetitions': 30}
     num_of_steps = np.zeros((len(n_values), experiment_args['episodes']-1))
     agent_args = {'n': 0, 'gamma': 0.95, 'alpha': 0.1, 'epsilon': 0.1}
-    env_args = {'iter_change': 100000000, 'start_state': (2, 0), 'goal_state': (0, 8)}
+    env_args = {
+        'iter_change': 100000000, 'start_state': (2, 0), 'goal_state': (0, 8),
+        'obstacles': [(i, 2) for i in range(1, 4)] + [(i, 7) for i in range(0, 3)] + [(4,5)]
+        }
 
     for i, n in enumerate(n_values):
         agent_args['n'] = n
