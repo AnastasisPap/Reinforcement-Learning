@@ -1,7 +1,7 @@
 import numpy as np
-from libs.base_classes.agent import BaseAgent
+from libs.utils.agent import BaseAgent
 from libs.envs.dyna_maze import DynaMaze
-from libs.graphs.graphing import plot_results
+from libs.utils.graphing import plot_results
 from planning_and_learning.model import Model
 from tqdm import tqdm
 

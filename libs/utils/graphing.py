@@ -36,4 +36,3 @@ def plot_results(x, y, x_label, y_label, labels, file_path):
     ax.set_ylabel(y_label)
     ax.legend(loc='upper right')
     plt.savefig(file_path, dpi=300)
-    plt.show()
