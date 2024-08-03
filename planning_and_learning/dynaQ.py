@@ -2,44 +2,19 @@ import sys, os
 sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 
 import numpy as np
+from libs.utils.agent import BaseAgent
 from libs.envs.dyna_maze import DynaMaze
 from libs.graphs.graphing import plot_results
 from planning_and_learning.model import Model
 from tqdm import tqdm
 
-class DynaQAgent:
+class DynaQAgent(BaseAgent):
     def __init__(self, env, args):
-        """
-        Args:
-            Env: object of DynaMaze which is the agent environment
-            args: dictionary mapping name (str) -> value (int or float)
-        """
-        self.epsilon = args.get('epsilon', 0.1)
-        self.gamma = args.get('gamma', 0.95)
-        self.alpha = args.get('alpha', 0.1)
+        super().__init__(env, args)
         self.n = args.get('n', 10)
-        self.env = env
-
         self.rnd_gen = np.random.RandomState(args.get('seed', 0))
-        self.Q = np.zeros((self.env.height, self.env.width, self.env.action_space.n))
         self.model = Model(env, self.rnd_gen)
 
-    def eps_greedy(self, s):
-        """It's the epsilon greedy policy. With probability epsilon selects any action
-        randomly with the same probability, and with prob 1-epsilon, greedily selects
-        the action and breaks ties arbitrarily.
-
-        Args:
-            The state (tuple of ints) for which the policy will be used.
-        Returns:
-            The action (int) which is an int in [0, 3]) which the policy chose.
-        """
-        prob = self.rnd_gen.uniform()
-        if prob < self.epsilon:
-            return self.rnd_gen.randint(self.env.action_space.n)
-        else:
-            return self.rnd_gen.choice(np.where(np.max(self.Q[s]) == self.Q[s])[0])
-    
     def planning(self):
         """For Dyna-Q agents with n>0, the following is the planning step.
         """
