@@ -1,6 +1,3 @@
-import sys, os
-sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
-
 import numpy as np
 from libs.envs.dyna_maze import DynaMaze
 from libs.graphs.graphing import plot_results
@@ -39,9 +36,8 @@ def experiment(env_class, agent_class, env_info, agent_info, exp_parameters):
     cum_reward_all = np.zeros((num_runs, num_max_steps))
 
     for run in tqdm(range(num_runs)):
-        agent_info['seed'] = run
         env = env_class(env_info)
-
+        agent_info['seed'] = run
         agent = agent_class(env, agent_info)
 
         num_steps = 0

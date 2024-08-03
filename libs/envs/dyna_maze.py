@@ -1,8 +1,4 @@
-import sys, os
-sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
-
 from libs.envs.grid_world import GridWorldEnv
-import numpy as np
 
 class DynaMaze(GridWorldEnv):
     def __init__(self, env_args):

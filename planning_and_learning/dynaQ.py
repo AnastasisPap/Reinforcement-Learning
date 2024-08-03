@@ -1,6 +1,3 @@
-import sys, os
-sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
-
 import numpy as np
 from libs.base_classes.agent import BaseAgent
 from libs.envs.dyna_maze import DynaMaze
