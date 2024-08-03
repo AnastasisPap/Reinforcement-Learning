@@ -36,14 +36,14 @@ class GridWorldEnv(gym.Env):
     def get_reward(self, state):
         return -1.0
 
-    """Resets the position of the agent to the start state.
-
-    Args:
-        Seed (int): required by the gymnasium interface
-    Returns:
-        The starting position (tuple of ints) of the agent
-    """
     def reset(self, seed=0):
+        """Resets the position of the agent to the start state.
+
+        Args:
+            Seed (int): required by the gymnasium interface
+        Returns:
+            The starting position (tuple of ints) of the agent
+        """
         super().reset(seed=seed)
         self._agent_location = np.array(self.start_state)
         self.grid[np.where(self.grid == 2)] = 0
@@ -57,19 +57,20 @@ class GridWorldEnv(gym.Env):
         for i in range(len(positions)):
             self.grid[positions[i]] = values[i]
     
-    """Step is the main interaction between the agent and the environment.
-    The agent chooses an action to perform in the environment, which then
-    responds with the next state and the reward from taking the action.
-
-    Args:
-        Action (int): an integer in [0, 3], which corresponds to one of the
-        available actions.
-    Returns:
-        New agent state (tuple of ints)
-        Reward (float) from moving to the new state
-        Is terminal (boolean) which is True iff the new state is a terminal state
-    """
     def step(self, action):
+        """Step is the main interaction between the agent and the environment.
+        The agent chooses an action to perform in the environment, which then
+        responds with the next state and the reward from taking the action.
+
+        Args:
+            Action (int): an integer in [0, 3], which corresponds to one of the
+            available actions.
+        Returns:
+            New agent state (tuple of ints)
+            Reward (float) from moving to the new state
+            Is terminal (boolean) which is True iff the new state is a terminal state
+        """
+
         # If the new action is out of bounds, clip it
         state = np.clip(
             self._get_obs() + self._action_to_direction[action],

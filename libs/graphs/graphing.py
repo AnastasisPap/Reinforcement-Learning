@@ -11,17 +11,17 @@ plt.rc('axes', labelsize=SIZE_LARGE)
 plt.rc('xtick', labelsize=SIZE_DEFAULT)
 plt.rc('ytick', labelsize=SIZE_DEFAULT)
 
-"""Plots a 2D line using matplotlib and saves it with high quality.
-
-Args:
-    x (np.array of shape (1, n)): the x-values
-    y (np.array of shape (k, n)): the y-values
-    x_label (str)
-    y_label (str)
-    labels (list of strings of size k)
-    file_path (str): the full (or relative) path in which the plot will be stored at
-"""
 def plot_results(x, y, x_label, y_label, labels, file_path):
+    """Plots a 2D line using matplotlib and saves it with high quality.
+
+    Args:
+        x (np.array of shape (1, n)): the x-values
+        y (np.array of shape (k, n)): the y-values
+        x_label (str)
+        y_label (str)
+        labels (list of strings of size k)
+        file_path (str): the full (or relative) path in which the plot will be stored at
+    """
     fig, ax = plt.subplots(figsize=(10, 6))
 
     for i in range(len(y)):
