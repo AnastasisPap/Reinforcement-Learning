@@ -12,7 +12,9 @@ class BaseAgent:
         self.alpha = args.get('alpha', 0.1)
         self.env = env
 
-        self.Q = np.zeros((env.height, env.width, env.action_space.n))
+        dims = (env.env_dimensions,) if type(env.env_dimensions) is int else env.env_dimensions
+        self.Q = np.zeros((*dims, env.action_space.n))
+        self.V = np.zeros(dims)
     
     def eps_greedy(self, s):
         """It's the epsilon greedy policy. With probability epsilon selects any action
@@ -29,6 +31,9 @@ class BaseAgent:
             return self.rnd_gen.randint(self.env.action_space.n)
         else:
             return self.rnd_gen.choice(np.where(np.max(self.Q[s]) == self.Q[s])[0])
+    
+    def reset(self, args):
+        return
         
     def step(self, s):
         return None, None, None

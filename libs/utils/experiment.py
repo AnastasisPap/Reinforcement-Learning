@@ -33,10 +33,11 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
         total_reward = 0
         total_episodes = 0
 
-        while total_episodes < episodes - 1 and total_steps < max_steps - 1:
+        while total_episodes < episodes and total_steps < max_steps - 1:
             # Reset the environment (move agent to the start)
             # Gymnasium requires this step is called at the start of each episode
             s = env.reset()
+            agent.reset(s)
             terminated = False
             curr_steps = 0
 

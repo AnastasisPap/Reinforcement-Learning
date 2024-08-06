@@ -4,11 +4,11 @@ import numpy as np
 
 class GridWorldEnv(gym.Env):
     def __init__(self, env_args):
-        self.width = env_args.get('n_cols', 9)
-        self.height = env_args.get('n_rows', 6)
+        self.env_dimensions = env_args.get('dimensions', (6, 9))
+        self.height, self.width = self.env_dimensions
         # The grid shows the position of each entity
         # 0: empty, 1: obstacle, 2: agent, 3: goal
-        self.grid = np.zeros((self.height, self.width), dtype=int)
+        self.grid = np.zeros(self.env_dimensions, dtype=int)
         self.start_state = env_args.get('start_state', (2, 0))
         self.goal_state = env_args.get('goal_state', (0, 8))
 
