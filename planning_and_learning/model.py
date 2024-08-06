@@ -12,7 +12,11 @@ class Model:
         # episodes
         self.rnd_gen = rnd_gen
         self.env = env
+        self.predecessors = {}
     
+    def get_predecessors(self, s):
+        return self.predecessors[s]
+
     def update(self, s, a, r, next_s):
         """Updates the model in which when the agent interacted with the environment
         and chose action "a" when at the state "s", the agent transitioned to the state
@@ -29,6 +33,10 @@ class Model:
             for new_a in range(self.env.action_space.n):
                 self.model[s][new_a] = (s, 0)
         self.model[s][a] = (next_s, r)
+
+        if next_s not in self.predecessors:
+            self.predecessors[next_s] = []
+        self.predecessors[next_s].append((s, a))
     
     def sample(self):
         """Randomly selects an observed (non-terminal) state s, and a randomly observed action a
