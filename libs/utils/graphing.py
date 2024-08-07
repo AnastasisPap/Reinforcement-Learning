@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
-colors = ['#2B2F42', '#8D99AE', '#EF233C', '#6482AD', '#BC9F8B',
+COLORS = ['#2B2F42', '#8D99AE', '#EF233C', '#6482AD', '#BC9F8B',
           '#FF8225', '#E3A5C7', '#914F1E', '#BEC6A0', '#FFC7ED']
+
 SIZE_DEFAULT = 12
 SIZE_LARGE = 14
 plt.rc('font', weight='normal')
@@ -23,6 +25,8 @@ def plot_results(x, y, x_label, y_label, labels, file_path):
         file_path (str): the full (or relative) path in which the plot will be stored at
     """
     fig, ax = plt.subplots(figsize=(10, 6))
+
+    colors = plt.cm.rainbow(np.linspace(0, 1, len(y))) if len(y) > len(COLORS) else COLORS
 
     for i in range(len(y)):
         ax.plot(x, y[i], label=labels[i], color=colors[i], linewidth=2)

@@ -24,6 +24,9 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
     data['avg_steps_per_episode'] = np.zeros((repetitions, episodes))
     data['cum_reward'] = np.zeros((repetitions, max_steps))
 
+    data['rms_error'] = 0
+    true_values = experiment_args.get('true_values', None)
+
     for rep in tqdm(range(repetitions)):
         env = EnvClass(env_args)
         agent_args['seed'] = rep
@@ -51,6 +54,9 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
                 data['cum_reward'][rep][total_steps] = total_reward
 
             data['avg_steps_per_episode'][rep][total_episodes] = curr_steps
+            
+            if true_values is not None:
+                data['rms_error'] += np.sqrt(np.sum(np.power(agent.V - true_values, 2)) / env_args['n'])
             total_episodes += 1
 
     return data
