@@ -27,6 +27,9 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
     data['rms_error'] = 0
     true_values = experiment_args.get('true_values', None)
 
+    states_dim = env_args.get('states_dim', None)
+    if states_dim: data['estimated_values_per_episode'] = np.zeros((repetitions, episodes, states_dim))
+
     for rep in tqdm(range(repetitions)):
         env = EnvClass(env_args)
         agent_args['seed'] = rep
@@ -57,6 +60,10 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
             
             if true_values is not None:
                 data['rms_error'] += np.sqrt(np.sum(np.power(agent.V - true_values, 2)) / env_args['n'])
+
+            if states_dim: data['estimated_values_per_episode'][rep][total_episodes] = agent.V
             total_episodes += 1
+
+    if states_dim: data['estimated_values_per_episode'] = np.mean(data['estimated_values_per_episode'], axis=0)
 
     return data
