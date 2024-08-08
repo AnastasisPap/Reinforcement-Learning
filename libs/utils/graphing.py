@@ -41,3 +41,32 @@ def plot_results(x, y, x_label, y_label, labels, file_path, ylim=None):
     if ylim: ax.set_ylim(ylim)
     ax.legend(loc='upper right')
     plt.savefig(file_path, dpi=300)
+
+def plot_3d(x, y, z, x_label, y_label, z_label, title, file_path, limits=None):
+    """Makes a 3D plot using matplotlib and saves it with high quality.
+
+    Args:
+        x (np.array of shape (m, n)): the x-values
+        y (np.array of shape (m, n)): the y-values
+        z (np.array of shape (m, n)): the z-values
+        x_label (str)
+        y_label (str)
+        z_label (str)
+        title (str)
+        file_path (str): the full (or relative) path in which the plot will be stored at
+        limits (list of tuples): the limits for the x, y and z axes
+    """
+    fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
+
+    ax.plot_surface(x, y, z, color=COLORS[0], linewidth=2, cmap='viridis', edgecolor='none')
+    ax.set_ylabel(y_label)
+    ax.set_xlabel(x_label)
+    ax.set_zlabel(z_label)
+    ax.set_title(title)
+
+    if limits:
+        ax.set_xlim(limits[0])
+        ax.set_ylim(limits[1])
+        ax.set_zlim(limits[2])
+
+    plt.savefig(file_path, dpi=300)
