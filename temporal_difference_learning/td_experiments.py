@@ -6,9 +6,11 @@ from libs.utils.graphing import plot_results
 
 from libs.envs.random_walk import RandomWalk
 from libs.envs.windy_grid_world import WindyGridWorld
+from libs.envs.cliff_walk import CliffWalk
 
 from temporal_difference_learning.td_zero import TDZero
 from temporal_difference_learning.sarsa import Sarsa
+from temporal_difference_learning.q_learning import QLearning
 
 def experiment_6_2():
     print('Starting experiment for example 6.2')
@@ -68,5 +70,26 @@ def experiment_6_5():
         file_path='./temporal_difference_learning/results/sarsa_6_5.png'
     )
 
+def experiment_6_6():
+    print('Starting experiment for example 6.6')
+
+    agent_args = {'alpha': 0.5}
+    env_args = {'dimensions': (4, 12), 'start_state': (3, 0), 'goal_state': (3, 11)}
+    exp_args = {'episodes': 500, 'repetitions': 100}
+    
+    data = []
+    data.append(experiment(CliffWalk, Sarsa, env_args, agent_args, exp_args)['cum_reward_per_episode'])
+    data.append(experiment(CliffWalk, QLearning, env_args, agent_args, exp_args)['cum_reward_per_episode'])
+
+    plot_results(
+        np.arange(exp_args['episodes']),
+        data,
+        x_label='Episodes',
+        y_label='Sum of rewards during episode',
+        labels=['Sarsa', 'Q-Learning'],
+        file_path='./temporal_difference_learning/results/qlearning_6_6.png'
+        [-100, -25]
+    )
+
 if __name__ == '__main__':
-    experiment_6_5()
+    experiment_6_6()

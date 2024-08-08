@@ -13,7 +13,7 @@ plt.rc('axes', labelsize=SIZE_LARGE)
 plt.rc('xtick', labelsize=SIZE_DEFAULT)
 plt.rc('ytick', labelsize=SIZE_DEFAULT)
 
-def plot_results(x, y, x_label, y_label, labels, file_path):
+def plot_results(x, y, x_label, y_label, labels, file_path, ylim=None):
     """Plots a 2D line using matplotlib and saves it with high quality.
 
     Args:
@@ -38,5 +38,6 @@ def plot_results(x, y, x_label, y_label, labels, file_path):
     
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
+    if ylim: ax.set_ylim(ylim)
     ax.legend(loc='upper right')
     plt.savefig(file_path, dpi=300)
