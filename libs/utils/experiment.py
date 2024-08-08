@@ -23,6 +23,7 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
     data = {}
     data['avg_steps_per_episode'] = np.zeros((repetitions, episodes))
     data['cum_reward'] = np.zeros((repetitions, max_steps))
+    data['episodes_per_time_step'] = np.zeros((repetitions, max_steps))
 
     data['rms_error'] = 0
     true_values = experiment_args.get('true_values', None)
@@ -55,6 +56,7 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
                 total_reward += r
 
                 data['cum_reward'][rep][total_steps] = total_reward
+                data['episodes_per_time_step'][rep][total_steps] = total_episodes
 
             data['avg_steps_per_episode'][rep][total_episodes] = curr_steps
             
@@ -65,5 +67,6 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
             total_episodes += 1
 
     if states_dim: data['estimated_values_per_episode'] = np.mean(data['estimated_values_per_episode'], axis=0)
+    data['episodes_per_time_step'] = np.mean(data['episodes_per_time_step'], axis=0)
 
     return data

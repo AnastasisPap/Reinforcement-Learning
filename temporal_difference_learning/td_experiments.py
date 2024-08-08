@@ -1,9 +1,14 @@
 import numpy as np
 
-from libs.envs.random_walk import RandomWalk
+
 from libs.utils.experiment import experiment
 from libs.utils.graphing import plot_results
+
+from libs.envs.random_walk import RandomWalk
+from libs.envs.windy_grid_world import WindyGridWorld
+
 from temporal_difference_learning.td_zero import TDZero
+from temporal_difference_learning.sarsa import Sarsa
 
 def experiment_6_2():
     print('Starting experiment for example 6.2')
@@ -45,5 +50,23 @@ def experiment_6_2():
         file_path='./temporal_difference_learning/results/td_zero_6_2.png'
     )
 
+def experiment_6_5():
+    print('Starting experiment for example 6.5')
+
+    agent_args = {'alpha': 0.5}
+    env_args = {'dimensions': (7, 10), 'start_state': (3, 0), 'goal_state': (3, 7)}
+    exp_args = {'max_steps': 8000}
+
+    data = experiment(WindyGridWorld, Sarsa, env_args, agent_args, exp_args)
+
+    plot_results(
+        np.arange(exp_args['max_steps']),
+        [data['episodes_per_time_step']],
+        x_label='Time Steps',
+        y_label='Episodes',
+        labels=['Sarsa'],
+        file_path='./temporal_difference_learning/results/sarsa_6_5.png'
+    )
+
 if __name__ == '__main__':
-    experiment_6_2()
+    experiment_6_5()
