@@ -32,7 +32,7 @@ def experiment_7_1():
         x_label='alpha',
         y_label='Average RMS error',
         labels=[f'n={step}' for step in steps],
-        file_path='./experiments/n_step_bootstrapping/results/n_step_td_7_1.png'
+        file_path='./n_step_bootstrapping/results/n_step_td_7_1.png'
     )
 
 if __name__ == '__main__':

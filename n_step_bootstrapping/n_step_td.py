@@ -1,9 +1,4 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
 from libs.utils.agent import BaseAgent
-from libs.envs.random_walk import RandomWalk
-from libs.utils.experiment import experiment
 
 class NStepTD(BaseAgent):
     def __init__(self, env, args):

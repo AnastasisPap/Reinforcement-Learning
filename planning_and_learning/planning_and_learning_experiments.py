@@ -29,7 +29,7 @@ def experiment_8_1():
         'Episodes',
         'Steps per Episode',
         [f'n={n}' for n in n_values],
-        './experiments/planning_and_learning/results/dynaQ_8_1.png'
+        './planning_and_learning/results/dynaQ_8_1.png'
     )
 
 def experiment_8_2():
@@ -53,7 +53,7 @@ def experiment_8_2():
         x_label='Time steps',
         y_label='Cumulative rewards',
         labels=['Dyna-Q', 'Dyna-Q+'],
-        file_path='./experiments/planning_and_learning/results/dynaQ_8_2.png'
+        file_path='./planning_and_learning/results/dynaQ_8_2.png'
     )
 
 
@@ -78,7 +78,7 @@ def experiment_8_3():
         x_label='Time steps',
         y_label='Cumulative rewards',
         labels=['Dyna-Q', 'Dyna-Q+'],
-        file_path='./experiments/planning_and_learning/results/dynaQ_8_3.png'
+        file_path='./planning_and_learning/results/dynaQ_8_3.png'
     )
 
 
