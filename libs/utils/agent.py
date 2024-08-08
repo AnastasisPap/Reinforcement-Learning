@@ -11,6 +11,7 @@ class BaseAgent:
         self.gamma = args.get('gamma', 1.0)
         self.alpha = args.get('alpha', 0.1)
         self.env = env
+        self.rnd_gen = np.random
 
         init_value = args.get('init_value', 0.0)
         dims = (env.env_dimensions,) if type(env.env_dimensions) is int else env.env_dimensions

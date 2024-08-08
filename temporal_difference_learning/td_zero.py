@@ -10,7 +10,8 @@ class TDZero(BaseAgent):
         self.s = s
     
     def step(self, s):
-        next_s, r, is_term = self.env.step(s)
+        a = self.eps_greedy(s)
+        next_s, r, is_term = self.env.step(a)
         self.V[s] += self.alpha * (r + self.gamma * self.V[next_s] - self.V[s])
 
         return next_s, is_term, r
