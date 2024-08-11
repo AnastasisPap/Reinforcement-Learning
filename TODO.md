@@ -4,3 +4,4 @@
  - [ ] Make better names
  - [ ] Add annotations to python variables
  - [ ] Improve readability
+ - [ ] Add pygame rendering to most envs
