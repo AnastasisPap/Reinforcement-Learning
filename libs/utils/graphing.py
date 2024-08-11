@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 
 COLORS = ['#2B2F42', '#8D99AE', '#EF233C', '#6482AD', '#BC9F8B',
@@ -68,5 +69,17 @@ def plot_3d(x, y, z, x_label, y_label, z_label, title, file_path, limits=None):
         ax.set_xlim(limits[0])
         ax.set_ylim(limits[1])
         ax.set_zlim(limits[2])
+
+    plt.savefig(file_path, dpi=300)
+
+def plot_policy(policy_grid, x_label, y_label, x_ticks, y_ticks, labels, file_path):
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    ax = sns.heatmap(policy_grid, linewidth=0, annot=True, cmap='Accent_r', cbar=False)
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    ax.set_xticklabels(x_ticks)
+    ax.set_yticklabels(y_ticks)
+    ax.legend(loc='upper right', labels=labels)
 
     plt.savefig(file_path, dpi=300)

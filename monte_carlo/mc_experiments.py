@@ -2,11 +2,12 @@ import numpy as np
 import gymnasium as gym
 
 from libs.utils.experiment import experiment
-from libs.utils.graphing import plot_results, plot_3d
+from libs.utils.graphing import plot_results, plot_3d, plot_policy
 
 from libs.envs.blackjack import Blackjack
 
 from monte_carlo.first_visit_prediction import FirstVisitMC
+from monte_carlo.exploring_starts import ExploringStarts
 
 def create_grids(data, usable_ace=0):
     X, Y = np.meshgrid(np.arange(12, 22), np.arange(1, 11))
@@ -15,6 +16,16 @@ def create_grids(data, usable_ace=0):
         for j in range(1, 11):
             Z[i-12, j-1] = data[(i, j, usable_ace)]
     return X, Y, Z
+
+def create_policy_grid(policy, usable_ace=0):
+    X, Y = np.meshgrid(np.arange(12, 22), np.arange(1, 11))
+    Z = np.apply_along_axis(
+        lambda obs: policy[(obs[0], obs[1], usable_ace)],
+        axis=2,
+        arr=np.dstack([X, Y])
+    )
+
+    return Z
 
 def experiment_5_1():
     print('Starting experiment for example 5.1')
@@ -39,5 +50,42 @@ def experiment_5_1():
         'Player sum', 'Dealer showing', 'State-value',
         'No usable ace', './monte_carlo/results/5_1_usable.png')
 
+def experiment_5_2():
+    print('Starting experiment for example 5.2')
+
+    exp_args = {'episodes': 500000}
+    env_args = {'sab': True, 'states_dim': (32, 11, 2)}
+    
+    data = experiment(Blackjack, ExploringStarts, env_args, {}, exp_args)
+
+    values = data['estimated_values_per_episode']
+    X_0, Y_0, Z_0 = create_grids(values[-1])
+    X_1, Y_1, Z_1 = create_grids(values[-1], 1)
+    policy_grid_0 = create_policy_grid(data['policy_per_rep'][0])
+    policy_grid_1 = create_policy_grid(data['policy_per_rep'][0], 1)
+
+    plot_3d(
+        X_0, Y_0, Z_0,
+        'Player sum', 'Dealer showing', 'State-value',
+        'No usable ace', './monte_carlo/results/5_2_no_usable.png')
+
+    plot_3d(
+        X_1, Y_1, Z_1,
+        'Player sum', 'Dealer showing', 'State-value',
+        'No usable ace', './monte_carlo/results/5_2_usable.png')
+
+    plot_policy(
+        policy_grid_0,
+        'Player sum', 'Dealer showing', range(12, 22),
+        ['A'] + list(range(2,11)), ['Stick', 'Hit'],
+        './monte_carlo/results/5_2_policy_no_usable.png'
+    )
+
+    plot_policy(
+        policy_grid_1,
+        'Player sum', 'Dealer showing', range(12, 22),
+        ['A'] + list(range(2,11)), ['Stick', 'Hit'],
+        './monte_carlo/results/5_2_policy_usable.png'
+    )
 if __name__ == '__main__':
-    experiment_5_1()
+    experiment_5_2()

@@ -30,6 +30,7 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
 
     data['rms_error'] = 0
     true_values = experiment_args.get('true_values', None)
+    data['policy_per_rep'] = []
 
     states_dim = env_args.get('states_dim', None)
     if states_dim: data['estimated_values_per_episode'] = np.zeros((repetitions, episodes, *states_dim))
@@ -71,6 +72,8 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
             if states_dim: data['estimated_values_per_episode'][rep][total_episodes] = agent.V
             total_episodes += 1
             pbar.update(1)
+
+        data['policy_per_rep'].append(agent.policy)
         
     pbar.close()
 

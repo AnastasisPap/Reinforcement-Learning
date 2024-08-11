@@ -14,6 +14,7 @@ class Blackjack:
         self.env = gym.make('Blackjack-v1', natural=natural, sab=sab)
         self.env_dimensions = tuple(dim.n for dim in self.env.observation_space.spaces)
         self.action_space = self.env.action_space
+        self.observation_space = self.env.observation_space
     
     def reset(self):
         obs, _ = self.env.reset()
