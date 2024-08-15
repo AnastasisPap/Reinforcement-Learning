@@ -19,7 +19,7 @@ def experiment_6_2():
     true_values[0] = 0
     true_values[-1] = 0
     exp_args = {'episodes': 100, 'repetitions': 100, 'true_values': true_values}
-    env_args = {'n': 5, 'states_dim': 7, 'seed': 0}
+    env_args = {'n': 5, 'seed': 0, 'states_dim': (7,)}
     agent_args = {'init_value': 0.5}
 
     alphas = [0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.15]
@@ -87,9 +87,11 @@ def experiment_6_6():
         x_label='Episodes',
         y_label='Sum of rewards during episode',
         labels=['Sarsa', 'Q-Learning'],
-        file_path='./temporal_difference_learning/results/qlearning_6_6.png'
-        [-100, -25]
+        file_path='./temporal_difference_learning/results/qlearning_6_6.png',
+        ylim=[-100, -25]
     )
 
 if __name__ == '__main__':
+    experiment_6_2()
+    experiment_6_5()
     experiment_6_6()

@@ -18,9 +18,11 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
         per episode and the cumulative reward
     """
     repetitions = experiment_args.get('repetitions', 1)
-    episodes = experiment_args.get('episodes', 100000)
-    max_steps = experiment_args.get('max_steps', 100000)
+    episodes = experiment_args.get('episodes', 10000000)
+    max_steps = experiment_args.get('max_steps', 10000000)
     data = {}
+
+    # TODO: create a stats class
     data['avg_steps_per_episode'] = np.zeros((repetitions, episodes))
     data['cum_reward'] = np.zeros((repetitions, max_steps))
     data['episodes_per_time_step'] = np.zeros((repetitions, max_steps))
@@ -28,11 +30,13 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
 
     data['rms_error'] = 0
     true_values = experiment_args.get('true_values', None)
+    data['policy_per_rep'] = []
 
     states_dim = env_args.get('states_dim', None)
-    if states_dim: data['estimated_values_per_episode'] = np.zeros((repetitions, episodes, states_dim))
+    if states_dim: data['estimated_values_per_episode'] = np.zeros((repetitions, episodes, *states_dim))
 
-    for rep in tqdm(range(repetitions)):
+    pbar = tqdm(total = repetitions * episodes)
+    for rep in range(repetitions):
         env = EnvClass(env_args)
         agent_args['seed'] = rep
         agent = AgentClass(env, agent_args)
@@ -67,6 +71,11 @@ def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
 
             if states_dim: data['estimated_values_per_episode'][rep][total_episodes] = agent.V
             total_episodes += 1
+            pbar.update(1)
+
+        data['policy_per_rep'].append(agent.policy)
+        
+    pbar.close()
 
     if states_dim: data['estimated_values_per_episode'] = np.mean(data['estimated_values_per_episode'], axis=0)
     data['episodes_per_time_step'] = np.mean(data['episodes_per_time_step'], axis=0)
