@@ -83,3 +83,27 @@ def plot_policy(policy_grid, x_label, y_label, x_ticks, y_ticks, labels, file_pa
     ax.legend(loc='upper right', labels=labels)
 
     plt.savefig(file_path, dpi=300)
+
+def graph_policy_trajectory(EnvClass, policy, args, file_path):
+    """Stores a heatmap of the agent trajectory using the policy. Also if the args
+    include {'render_mode': human}, then the trajectory is displayed in a pygame window.
+
+    Args:
+        EnvClass (Env.gym): the environment class
+        policy (np.array): the policy
+        args (dict): the arguments to pass to the environment
+        file_path (str): the full (or relative) path in which the plot will be stored at
+    """
+    env = EnvClass(args)
+
+    grid = env.grid.copy()
+    s = env.reset()
+    is_term = False
+
+    while not is_term:
+        a = policy[s]
+        grid[s] = env.agent_marker
+        s, _, is_term = env.step(a)
+
+    sns.heatmap(grid, cmap=sns.color_palette("Blues", as_cmap=True), xticklabels=False, yticklabels=False, cbar=False, square=True)
+    plt.savefig(file_path, dpi=300)

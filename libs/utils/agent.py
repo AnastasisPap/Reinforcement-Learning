@@ -16,9 +16,12 @@ class BaseAgent:
         init_value = args.get('init_value', 0.0)
         dims = (env.env_dimensions,) if type(env.env_dimensions) is int else env.env_dimensions
 
-        if init_value == 'random':
+        if init_value == 'uniform':
             self.Q = np.random.uniform(size=(*dims, env.action_space.n))
             self.V = np.random.uniform(size=dims)
+        elif init_value == 'normal':
+            self.Q = np.random.normal(size=(*dims, env.action_space.n))
+            self.V = np.random.normal(size=dims)
         else:
             self.Q = np.full((*dims, env.action_space.n), init_value)
             self.V = np.full(dims, init_value)

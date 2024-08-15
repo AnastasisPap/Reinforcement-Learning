@@ -1,13 +1,15 @@
+import pickle
 import numpy as np
-import gymnasium as gym
 
 from libs.utils.experiment import experiment
-from libs.utils.graphing import plot_results, plot_3d, plot_policy
+from libs.utils.graphing import graph_policy_trajectory, plot_3d, plot_policy
 
 from libs.envs.blackjack import Blackjack
+from libs.envs.racetrack import RacetrackEnv
 
 from monte_carlo.first_visit_prediction import FirstVisitMC
 from monte_carlo.exploring_starts import ExploringStarts
+from monte_carlo.off_policy_mc_control import OffPolicyMCControl
 
 def create_grids(data, usable_ace=0):
     X, Y = np.meshgrid(np.arange(12, 22), np.arange(1, 11))
@@ -87,5 +89,25 @@ def experiment_5_2():
         ['A'] + list(range(2,11)), ['Stick', 'Hit'],
         './monte_carlo/results/5_2_policy_usable.png'
     )
+
+def experiment_5_12():
+    print('Starting experiment for exercise 5.12')
+
+    exp_args = {'episodes': 500_000}
+    agent_args = {'gamma': 0.9, 'init_value': 'normal'}
+
+    data = experiment(RacetrackEnv, OffPolicyMCControl, {}, agent_args, exp_args)
+    with open('./monte_carlo/results/racetrack_policy_500k_2.pkl', 'wb') as f:
+        pickle.dump(data, f)
+
+
+    """If there is a prestored pickle data file, then uncomment the following and 
+    comment the previous block of code.
+    """
+    #data = pickle.load(open('./monte_carlo/results/racetrack_policy_500k.pkl', 'rb'))
+    policy = data['policy_per_rep'][0]
+
+    graph_policy_trajectory(RacetrackEnv, policy, {}, './monte_carlo/results/5_12_racetrack_trajectory.png')
+
 if __name__ == '__main__':
-    experiment_5_2()
+    experiment_5_12()
