@@ -1,3 +1,4 @@
+from __future__ import annotations
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -14,7 +15,14 @@ plt.rc('axes', labelsize=SIZE_LARGE)
 plt.rc('xtick', labelsize=SIZE_DEFAULT)
 plt.rc('ytick', labelsize=SIZE_DEFAULT)
 
-def plot_results(x, y, x_label, y_label, labels, file_path, ylim=None):
+def plot_results(
+        x: np.ndarray,
+        y: np.ndarray,
+        x_label: str,
+        y_label: str,
+        labels: list[str],
+        file_path:str,
+        ylim: tuple[int] | None=None):
     """Plots a 2D line using matplotlib and saves it with high quality.
 
     Args:
@@ -43,7 +51,16 @@ def plot_results(x, y, x_label, y_label, labels, file_path, ylim=None):
     ax.legend(loc='upper right')
     plt.savefig(file_path, dpi=300)
 
-def plot_3d(x, y, z, x_label, y_label, z_label, title, file_path, limits=None):
+def plot_3d(
+        x: np.ndarray,
+        y: np.ndarray,
+        z: np.ndarray,
+        x_label: str,
+        y_label: str,
+        z_label: str,
+        title: str,
+        file_path: str,
+        limits: list[tuple] | None=None):
     """Makes a 3D plot using matplotlib and saves it with high quality.
 
     Args:
@@ -72,7 +89,14 @@ def plot_3d(x, y, z, x_label, y_label, z_label, title, file_path, limits=None):
 
     plt.savefig(file_path, dpi=300)
 
-def plot_policy(policy_grid, x_label, y_label, x_ticks, y_ticks, labels, file_path):
+def plot_policy(
+        policy_grid: np.ndarray,
+        x_label: str,
+        y_label: str,
+        x_ticks: list[str],
+        y_ticks: list[str],
+        labels: list[str],
+        file_path: str):
     fig, ax = plt.subplots(figsize=(10, 6))
 
     ax = sns.heatmap(policy_grid, linewidth=0, annot=True, cmap='Accent_r', cbar=False)
@@ -84,7 +108,11 @@ def plot_policy(policy_grid, x_label, y_label, x_ticks, y_ticks, labels, file_pa
 
     plt.savefig(file_path, dpi=300)
 
-def graph_policy_trajectory(EnvClass, policy, args, file_path):
+def graph_policy_trajectory(
+        EnvClass: object,
+        policy: dict | np.ndarray | list,
+        args: dict,
+        file_path: str):
     """Stores a heatmap of the agent trajectory using the policy. Also if the args
     include {'render_mode': human}, then the trajectory is displayed in a pygame window.
 

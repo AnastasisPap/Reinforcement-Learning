@@ -1,10 +1,11 @@
+from __future__ import annotations
 import pygame
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 
 class RacetrackEnv(gym.Env):
-    def __init__(self, env_args):
+    def __init__(self, env_args: dict) -> None:
         # Racetrack dimensions
         self.env_dimensions = env_args.get('dimensions', (32, 17))
         self.height, self.width = self.env_dimensions
@@ -53,7 +54,7 @@ class RacetrackEnv(gym.Env):
         self.grid[start_states] = 2
         self.grid[goal_states] = 3
 
-    def reset(self, seed=0):
+    def reset(self, seed: int=0) -> tuple | int:
         super().reset(seed=seed)
         self.vel = np.array([0, 0])
 
@@ -68,16 +69,16 @@ class RacetrackEnv(gym.Env):
 
         return self._get_obs()
 
-    def _get_obs(self):
+    def _get_obs(self) -> tuple | int:
         return tuple(self._agent_location)
     
-    def is_terminal(self, s):
+    def is_terminal(self, s: tuple | int) -> bool:
         rows = np.array(self.goal_states)[:,0]
         col = np.array(self.goal_states)[0,1]
 
         return s[0] in rows and s[1] >= col
 
-    def out_of_bounds(self, state):
+    def out_of_bounds(self, state: tuple | int) -> bool:
         """Checks whether a state is out of bounds. However, if it is indeed out of bounds,
         but crossed the finish line, then it is not considered out of bounds.
         """
@@ -85,7 +86,7 @@ class RacetrackEnv(gym.Env):
             np.logical_or(np.less(state, (0, 0)), np.greater_equal(state, self.grid.shape)).any()) and\
             not self.is_terminal(state)
     
-    def step(self, action):
+    def step(self, action: int) -> tuple[tuple, float, bool]:
         # Increase velocity based on action
         new_vel = self.vel + self._action_to_direction[action]
 
@@ -107,7 +108,7 @@ class RacetrackEnv(gym.Env):
 
         return self._get_obs(), -1, self.is_terminal(new_loc)
     
-    def render(self):
+    def render(self) -> None:
         if self.window is None:
             pygame.init()
             if self.render_mode == 'human':

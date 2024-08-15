@@ -1,14 +1,16 @@
+from __future__ import annotations
+import gymnasium as gym
 import numpy as np
 
 from libs.utils.agent import BaseAgent
 
 class FirstVisitMC(BaseAgent):
-    def __init__(self, env, args):
+    def __init__(self, env: gym.Env, args: dict) -> None:
         super().__init__(env, args)
         self.policy = args.get('policy', self.eps_greedy)
         self.returns = {}
 
-    def generate_episode(self, s):
+    def generate_episode(self, s: tuple | int) -> tuple[list, list]:
         states = [s]
         rewards = []
         is_terminal = False
@@ -21,7 +23,7 @@ class FirstVisitMC(BaseAgent):
         
         return states[:-1], rewards
     
-    def step(self, s):
+    def step(self, s: tuple | int) -> tuple[None, bool, int]:
         gen_states, gen_rs = self.generate_episode(s)
 
         G = 0.0

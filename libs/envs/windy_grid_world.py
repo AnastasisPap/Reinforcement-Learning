@@ -3,11 +3,11 @@ import numpy as np
 from libs.envs.grid_world import GridWorldEnv
 
 class WindyGridWorld(GridWorldEnv):
-    def __init__(self, env_args):
+    def __init__(self, env_args: dict) -> None:
         super().__init__(env_args)
         self.wind_strength = env_args.get('wind_strength', [0, 0, 0, 1, 1, 1, 2, 2, 1, 0])
     
-    def step(self, action):
+    def step(self, action: int) -> tuple[tuple, float, bool]:
         wind = self.wind_strength[self._agent_location[1]]
         s, _, _ = super().step(action)
 

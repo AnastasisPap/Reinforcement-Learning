@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pickle
 import numpy as np
 
@@ -11,7 +12,10 @@ from monte_carlo.first_visit_prediction import FirstVisitMC
 from monte_carlo.exploring_starts import ExploringStarts
 from monte_carlo.off_policy_mc_control import OffPolicyMCControl
 
-def create_grids(data, usable_ace=0):
+def create_grids(
+        data: dict | np.ndarray,
+        usable_ace: int=0
+        ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     X, Y = np.meshgrid(np.arange(12, 22), np.arange(1, 11))
     Z = np.zeros(X.shape)
     for i in range(12, 22):
@@ -19,7 +23,10 @@ def create_grids(data, usable_ace=0):
             Z[i-12, j-1] = data[(i, j, usable_ace)]
     return X, Y, Z
 
-def create_policy_grid(policy, usable_ace=0):
+def create_policy_grid(
+        policy: dict | np.ndarray,
+        usable_ace: int=0
+        ) -> np.ndarray:
     X, Y = np.meshgrid(np.arange(12, 22), np.arange(1, 11))
     Z = np.apply_along_axis(
         lambda obs: policy[(obs[0], obs[1], usable_ace)],

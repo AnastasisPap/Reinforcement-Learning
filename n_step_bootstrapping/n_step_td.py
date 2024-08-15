@@ -1,17 +1,19 @@
+from __future__ import annotations
+import gymnasium as gym
 from libs.utils.agent import BaseAgent
 
 class NStepTD(BaseAgent):
-    def __init__(self, env, args):
+    def __init__(self, env: gym.Env, args: dict) -> None:
         super().__init__(env, args)
         self.n = args.get('n', 1)
     
-    def reset(self, s):
+    def reset(self, s: tuple | int) -> None:
         self.states = [s]
         self.rewards = [0]
         self.t = 0
         self.T = float('inf')
     
-    def step(self, s):
+    def step(self, s: tuple | int) -> tuple[tuple | int, bool, int]:
         finished = False
 
         if self.t < self.T:

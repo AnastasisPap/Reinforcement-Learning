@@ -1,3 +1,4 @@
+from __future__ import annotations
 import gymnasium as gym
 
 """We use the pre-built environment from OpenAI Gym.
@@ -8,7 +9,7 @@ Documentation: https://www.gymlibrary.dev/environments/toy_text/blackjack/
 """
 
 class Blackjack:
-    def __init__(self, args):
+    def __init__(self, args: dict) -> None:
         natural = args.get('natural', False)
         sab = args.get('sab', False)
         self.env = gym.make('Blackjack-v1', natural=natural, sab=sab)
@@ -16,11 +17,11 @@ class Blackjack:
         self.action_space = self.env.action_space
         self.observation_space = self.env.observation_space
     
-    def reset(self):
+    def reset(self) -> tuple | int:
         obs, _ = self.env.reset()
         return obs
     
-    def step(self, a):
+    def step(self, a: int) -> tuple[tuple, float, bool]:
         """
         Actions:
          - 0: stick

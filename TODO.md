@@ -5,6 +5,5 @@
  - [ ] Include in the README information about the arguments for each env/agent/experiment
  - [ ] Make better names
  - [ ] Make statistics class
- - [ ] Add annotations to python variables
  - [ ] Improve readability
  - [ ] Add pygame rendering to most envs

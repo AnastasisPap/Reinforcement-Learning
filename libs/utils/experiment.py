@@ -1,7 +1,13 @@
+from __future__ import annotations
 import numpy as np
 from tqdm import tqdm
 
-def experiment(EnvClass, AgentClass, env_args, agent_args, experiment_args):
+def experiment(
+        EnvClass: object,
+        AgentClass: object,
+        env_args: dict,
+        agent_args: dict,
+        experiment_args: dict) -> dict:
     """Completes the experiment. To properly calculate the number of steps required to complete
     the episode, multiple iterations are used and then averaged. For each iteration, multiple
     episodes are used. At the start of each new run, the agent is reset, while the env is

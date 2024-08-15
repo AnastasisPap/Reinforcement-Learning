@@ -1,9 +1,10 @@
+from __future__ import annotations
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 
 class GridWorldEnv(gym.Env):
-    def __init__(self, env_args):
+    def __init__(self, env_args: dict) -> None:
         self.env_dimensions = env_args.get('dimensions', (6, 9))
         self.height, self.width = self.env_dimensions
         # The grid shows the position of each entity
@@ -21,22 +22,22 @@ class GridWorldEnv(gym.Env):
         }
         self._action_to_name = {0: 'up', 1: 'down', 2: 'left', 3: 'right'}
 
-    def _get_obs(self):
+    def _get_obs(self) -> tuple | int:
         return tuple(self._agent_location)
     
-    def _get_info(self):
+    def _get_info(self) -> dict:
         return {"grid": self.grid}
     
-    def is_valid_state(self, state):
+    def is_valid_state(self, state: tuple | int) -> bool:
         return np.logical_and(np.greater_equal(state, (0, 0)), np.less(state, self.grid.shape)).all()
 
-    def is_terminal(self, state):
+    def is_terminal(self, state: tuple | int) -> bool:
         return np.array_equal(state, self.goal_state)
 
-    def get_reward(self, state):
+    def get_reward(self, state: tuple | int) -> float:
         return -1.0
 
-    def reset(self, seed=0):
+    def reset(self, seed: int=0) -> tuple | int:
         """Resets the position of the agent to the start state.
 
         Args:
@@ -52,12 +53,12 @@ class GridWorldEnv(gym.Env):
         self.grid[self.goal_state] = 3
         return self._get_obs()
     
-    def edit_grid_values(self, positions, values):
+    def edit_grid_values(self, positions: list, values: list) -> None:
         assert len(positions) == len(values), "The number of positions and values must be the same"
         for i in range(len(positions)):
             self.grid[positions[i]] = values[i]
     
-    def step(self, action):
+    def step(self, action: int) -> tuple[tuple, float, bool]:
         """Step is the main interaction between the agent and the environment.
         The agent chooses an action to perform in the environment, which then
         responds with the next state and the reward from taking the action.

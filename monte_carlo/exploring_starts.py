@@ -1,3 +1,5 @@
+from __future__ import annotations
+import gymnasium as gym
 import itertools
 import numpy as np
 
@@ -5,12 +7,12 @@ import numpy as np
 from libs.utils.agent import BaseAgent
 
 class ExploringStarts(BaseAgent):
-    def __init__(self, env, args):
+    def __init__(self, env: gym.Env, args: dict) -> None:
         super().__init__(env, args)
         self.returns = {}
         self.init_policy()
 
-    def init_policy(self):
+    def init_policy(self) -> None:
         self.policy = {}
         dim_ranges = [range(dim.n) for dim in self.env.observation_space]
         states = list(itertools.product(*dim_ranges))
@@ -18,7 +20,7 @@ class ExploringStarts(BaseAgent):
         for s in states:
             self.policy[s] = 1 if s[0] <= 20 else 0
 
-    def generate_episode(self, s):
+    def generate_episode(self, s: tuple | int) -> tuple[list, list, list]:
         states = [s]
         rewards = []
         actions = []
@@ -33,8 +35,7 @@ class ExploringStarts(BaseAgent):
         
         return states[:-1], actions, rewards
 
-
-    def step(self, s):
+    def step(self, s: tuple | int) -> tuple[None, bool, int]:
         states, actions, rewards = self.generate_episode(s)
 
         G = 0.0

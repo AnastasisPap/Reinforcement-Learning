@@ -1,7 +1,9 @@
+from __future__ import annotations
+import gymnasium as gym
 import numpy as np
 
 class BaseAgent:
-    def __init__(self, env, args):
+    def __init__(self, env: gym.Env, args: dict) -> None:
         """
         Args:
             Env: object of DynaMaze which is the agent environment
@@ -27,7 +29,7 @@ class BaseAgent:
             self.Q = np.full((*dims, env.action_space.n), init_value)
             self.V = np.full(dims, init_value)
     
-    def eps_greedy(self, s):
+    def eps_greedy(self, s: tuple | int) -> int:
         """It's the epsilon greedy policy. With probability epsilon selects any action
         randomly with the same probability, and with prob 1-epsilon, greedily selects
         the action and breaks ties arbitrarily.
@@ -43,8 +45,8 @@ class BaseAgent:
         else:
             return self.rnd_gen.choice(np.where(np.max(self.Q[s]) == self.Q[s])[0])
     
-    def reset(self, args):
+    def reset(self, args: dict):
         return
         
-    def step(self, s):
+    def step(self, s: tuple | int) -> tuple:
         return None, None, None
