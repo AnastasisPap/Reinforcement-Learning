@@ -85,16 +85,16 @@ def experiment_5_2():
 
     plot_policy(
         policy_grid_0,
-        'Player sum', 'Dealer showing', range(12, 22),
-        ['A'] + list(range(2,11)), ['Stick', 'Hit'],
-        './monte_carlo/results/5_2_policy_no_usable.png'
+        'Player sum', 'Dealer showing', list(range(12, 22)),
+        ['A'] + list(range(2,11)), [0, 1], ['Stick', 'Hit'],
+        'No usable ace', './monte_carlo/results/5_2_policy_no_usable.png'
     )
 
     plot_policy(
         policy_grid_1,
-        'Player sum', 'Dealer showing', range(12, 22),
-        ['A'] + list(range(2,11)), ['Stick', 'Hit'],
-        './monte_carlo/results/5_2_policy_usable.png'
+        'Player sum', 'Dealer showing', list(range(12, 22)),
+        ['A'] + list(range(2,11)), [0, 1], ['Stick', 'Hit'],
+        'Usable ace', './monte_carlo/results/5_2_policy_usable.png'
     )
 
 def experiment_5_12():

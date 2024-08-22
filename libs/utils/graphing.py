@@ -50,6 +50,7 @@ def plot_results(
     if ylim: ax.set_ylim(ylim)
     ax.legend(loc='upper right')
     plt.savefig(file_path, dpi=300)
+    plt.close()
 
 def plot_3d(
         x: np.ndarray,
@@ -88,25 +89,34 @@ def plot_3d(
         ax.set_zlim(limits[2])
 
     plt.savefig(file_path, dpi=300)
+    plt.close()
 
 def plot_policy(
-        policy_grid: np.ndarray,
+        policy_grid: np.ndarray | list,
         x_label: str,
         y_label: str,
         x_ticks: list[str],
         y_ticks: list[str],
-        labels: list[str],
+        cbar_ticks: list[str],
+        cbar_labels: list[str],
+        title: str,
         file_path: str):
+
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    ax = sns.heatmap(policy_grid, linewidth=0, annot=True, cmap='Accent_r', cbar=False)
+    cmap = plt.get_cmap('Accent_r', len(np.unique(policy_grid)))
+    plot = ax.imshow(policy_grid, cmap=cmap, interpolation='none')
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
-    ax.set_xticklabels(x_ticks)
-    ax.set_yticklabels(y_ticks)
-    ax.legend(loc='upper right', labels=labels)
+    ax.set_xticks(ticks=range(len(x_ticks)), labels=x_ticks)
+    ax.set_yticks(ticks=range(len(y_ticks)), labels=y_ticks)
+    ax.set_title(title)
+
+    cbar = fig.colorbar(plot)
+    cbar.set_ticks(cbar_ticks, labels=cbar_labels)
 
     plt.savefig(file_path, dpi=300)
+    plt.close()
 
 def graph_policy_trajectory(
         EnvClass: object,
@@ -135,3 +145,4 @@ def graph_policy_trajectory(
 
     sns.heatmap(grid, cmap=sns.color_palette("Blues", as_cmap=True), xticklabels=False, yticklabels=False, cbar=False, square=True)
     plt.savefig(file_path, dpi=300)
+    plt.close()
