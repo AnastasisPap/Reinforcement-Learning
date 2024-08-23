@@ -95,25 +95,44 @@ def plot_policy(
         policy_grid: np.ndarray | list,
         x_label: str,
         y_label: str,
-        x_ticks: list[str],
-        y_ticks: list[str],
-        cbar_ticks: list[str],
-        cbar_labels: list[str],
         title: str,
-        file_path: str):
+        file_path: str,
+        args: dict):
+    """
+    Args:
+     - policy_grid (np.array of shape (m, n)): the policy grid
+     - x_label (str): the x-axis label
+     - y_label (str): the y-axis label
+     - title: the title of the plot
+     - file_path (str): the full (or relative) path in which the plot will be stored at
+     - args (dict):
+        - x_ticks (list of strings of size m): the x-axis ticks
+        - y_ticks (list of strings of size n): the y-axis ticks
+        - cbar_ticks (list of strings of size k): the colorbar ticks
+        - cbat_labels (list of strings of size k): the colorbar labels
+    """
 
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    cmap = plt.get_cmap('Accent_r', len(np.unique(policy_grid)))
-    plot = ax.imshow(policy_grid, cmap=cmap, interpolation='none')
+    cmap_name = args.get('cmap', 'Accent_r')
+    origin = args.get('origin', None)
+    cmap = plt.get_cmap(cmap_name, len(np.unique(policy_grid)))
+    plot = ax.imshow(policy_grid, cmap=cmap, origin=origin)
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
-    ax.set_xticks(ticks=range(len(x_ticks)), labels=x_ticks)
-    ax.set_yticks(ticks=range(len(y_ticks)), labels=y_ticks)
     ax.set_title(title)
 
+    x_ticks = args.get('x_ticks', None)
+    y_ticks = args.get('y_ticks', None)
+    if x_ticks is not None:
+        ax.set_xticks(ticks=range(len(x_ticks)), labels=x_ticks)
+        ax.set_yticks(ticks=range(len(y_ticks)), labels=y_ticks)
+
     cbar = fig.colorbar(plot)
-    cbar.set_ticks(cbar_ticks, labels=cbar_labels)
+    cbar_ticks = args.get('cbar_ticks', None)
+    cbar_labels= args.get('cbar_labels', None)
+    if cbar_ticks is not None:
+        cbar.set_ticks(cbar_ticks, labels=cbar_labels)
 
     plt.savefig(file_path, dpi=300)
     plt.close()
