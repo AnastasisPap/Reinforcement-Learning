@@ -33,7 +33,7 @@ def experiment_4_2():
     plot_3d(
         X, Y, data['value'],
         '# of cars at 2nd location', '# of cars at 1st location', 'Value',
-        'Value function', './dynamic_programming/results/experiment_4_2_value.png'
+        'Value function', './dynamic_programming/results/experiment_4_2_value.png', {}
     )
 
 

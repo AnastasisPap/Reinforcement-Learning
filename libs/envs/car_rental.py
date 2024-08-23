@@ -32,6 +32,9 @@ class CarRentalEnv(gym.Env):
         self.probs = self.get_probs(
             [lambda_first_req, lambda_second_req, lambda_first_ret, lambda_second_ret], self.min_prob)
     
+    def get_actions(self, s: tuple) -> list[int]:
+        return self.actions
+    
     def get_probs(self, lambdas, min_prob):
         req_ret_space = np.array(
             [[i, j, k, l]

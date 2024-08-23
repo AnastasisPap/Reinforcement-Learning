@@ -1,8 +1,4 @@
-import matplotlib.pyplot as plt
-import numpy as np
-
 from libs.utils.agent import BaseAgent
-from libs.envs.car_rental import CarRentalEnv
 
 class MDPPolicyIter(BaseAgent):
     def __init__(self, env, args):
@@ -19,9 +15,14 @@ class MDPPolicyIter(BaseAgent):
         path = args.get('dynamics_path', './libs/envs/dynamics.pkl') 
         self.dynamics = env.get_dynamics(path, load)
         self.policy = {s: 0 for s in self.observation_space}
+    
+    def iteration(self):
+        self.policy_evaluation()
+        return self.policy_improvement()
         
     def policy_evaluation(self):
         delta = float('inf')
+        self.sweeps = []
 
         while delta >= self.theta:
             delta = 0
@@ -36,6 +37,7 @@ class MDPPolicyIter(BaseAgent):
                     new_v += prob * (r + self.gamma * self.V[s_prime])
                 self.V[s] = new_v
                 delta = max(delta, abs(prev_value - self.V[s]))
+            self.sweeps.append(self.V.copy())
             
         return delta
     
@@ -46,7 +48,7 @@ class MDPPolicyIter(BaseAgent):
             old_action = self.policy[s]
             max_v = -1
 
-            for a in self.env.actions:
+            for a in self.env.get_actions(s):
                 if not self.env.check_state_action(s, a): continue
 
                 v = sum(

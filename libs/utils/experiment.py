@@ -117,22 +117,21 @@ def dp_experiment(
     store_data = experiment_args.get('store_data', False)
 
     policy_stable = False
-    deltas = []
+    sweeps = []
     policies = []
 
     i = 0
     while not policy_stable:
-        delta = agent.policy_evaluation()
-        policy_stable = agent.policy_improvement()
-        deltas.append(delta)
+        policy_stable = agent.iteration()
         policy = agent.policy.copy()
         policies.append(policy)
+        sweeps.append(agent.sweeps.copy())
         i += 1
 
         if i % update_freq == 0:
-            print(f'Finished iter {i}, delta: {delta}')
+            print(f'Finished iter {i}.')
     
-    data = {'deltas': deltas, 'policies': policies}
+    data = {'policies': policies, 'sweeps': sweeps}
     data['value'] = agent.V
 
     if store_data:
