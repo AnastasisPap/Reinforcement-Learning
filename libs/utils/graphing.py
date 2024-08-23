@@ -61,7 +61,7 @@ def plot_3d(
         z_label: str,
         title: str,
         file_path: str,
-        limits: list[tuple] | None=None):
+        args: dict):
     """Makes a 3D plot using matplotlib and saves it with high quality.
 
     Args:
@@ -77,12 +77,14 @@ def plot_3d(
     """
     fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
 
-    ax.plot_surface(x, y, z, color=COLORS[0], linewidth=2, cmap='viridis', edgecolor='none')
+    cmap = args.get('cmap', 'viridis')
+    ax.plot_surface(x, y, z, color=COLORS[0], linewidth=2, cmap=cmap, edgecolor='none')
     ax.set_ylabel(y_label)
     ax.set_xlabel(x_label)
     ax.set_zlabel(z_label)
     ax.set_title(title)
 
+    limits = args.get('limits', None)
     if limits:
         ax.set_xlim(limits[0])
         ax.set_ylim(limits[1])

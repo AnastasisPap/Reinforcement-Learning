@@ -52,12 +52,12 @@ def experiment_5_1():
     plot_3d(
         X_0, Y_0, Z_0,
         'Player sum', 'Dealer showing', 'State-value',
-        'No usable ace', './monte_carlo/results/5_1_no_usable.png')
+        'No usable ace', './monte_carlo/results/5_1_no_usable.png', {})
 
     plot_3d(
         X_1, Y_1, Z_1,
         'Player sum', 'Dealer showing', 'State-value',
-        'No usable ace', './monte_carlo/results/5_1_usable.png')
+        'No usable ace', './monte_carlo/results/5_1_usable.png', {})
 
 def experiment_5_2():
     print('Starting experiment for example 5.2')
@@ -76,12 +76,12 @@ def experiment_5_2():
     plot_3d(
         X_0, Y_0, Z_0,
         'Player sum', 'Dealer showing', 'State-value',
-        'No usable ace', './monte_carlo/results/5_2_no_usable.png')
+        'No usable ace', './monte_carlo/results/5_2_no_usable.png', {})
 
     plot_3d(
         X_1, Y_1, Z_1,
         'Player sum', 'Dealer showing', 'State-value',
-        'No usable ace', './monte_carlo/results/5_2_usable.png')
+        'No usable ace', './monte_carlo/results/5_2_usable.png', {})
 
     args = {'x_ticks': list(range(12, 22)), 'y_ticks': ['A'] + list(range(2, 11)), 'cbar_ticks': [0, 1], 'cbar_labels': ['Stick', 'Hit']}
     plot_policy(
