@@ -17,17 +17,18 @@ class BaseAgent:
         self.policy = None
 
         init_value = args.get('init_value', 0.0)
+        dtype = args.get('dtype', float)
         dims = (env.env_dimensions,) if type(env.env_dimensions) is int else env.env_dimensions
 
         if init_value == 'uniform':
-            self.Q = np.random.uniform(size=(*dims, env.action_space.n))
-            self.V = np.random.uniform(size=dims)
+            self.Q = np.random.uniform(size=(*dims, env.action_space.n), dtype=dtype)
+            self.V = np.random.uniform(size=dims, dtype=dtype)
         elif init_value == 'normal':
-            self.Q = np.random.normal(size=(*dims, env.action_space.n))
-            self.V = np.random.normal(size=dims)
+            self.Q = np.random.normal(size=(*dims, env.action_space.n), dtype=dtype)
+            self.V = np.random.normal(size=dims, dtype=dtype)
         else:
-            self.Q = np.full((*dims, env.action_space.n), init_value)
-            self.V = np.full(dims, init_value)
+            self.Q = np.full((*dims, env.action_space.n), init_value, dtype=dtype)
+            self.V = np.full(dims, init_value, dtype=dtype)
     
     def eps_greedy(self, s: tuple | int) -> int:
         """It's the epsilon greedy policy. With probability epsilon selects any action
