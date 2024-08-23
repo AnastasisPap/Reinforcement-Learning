@@ -1,7 +1,9 @@
+from __future__ import annotations
+import gymnasium as gym
 import numpy as np
 
 class BaseAgent:
-    def __init__(self, env, args):
+    def __init__(self, env: gym.Env, args: dict) -> None:
         """
         Args:
             Env: object of DynaMaze which is the agent environment
@@ -15,19 +17,20 @@ class BaseAgent:
         self.policy = None
 
         init_value = args.get('init_value', 0.0)
+        dtype = args.get('dtype', float)
         dims = (env.env_dimensions,) if type(env.env_dimensions) is int else env.env_dimensions
 
         if init_value == 'uniform':
-            self.Q = np.random.uniform(size=(*dims, env.action_space.n))
-            self.V = np.random.uniform(size=dims)
+            self.Q = np.random.uniform(size=(*dims, env.action_space.n), dtype=dtype)
+            self.V = np.random.uniform(size=dims, dtype=dtype)
         elif init_value == 'normal':
-            self.Q = np.random.normal(size=(*dims, env.action_space.n))
-            self.V = np.random.normal(size=dims)
+            self.Q = np.random.normal(size=(*dims, env.action_space.n), dtype=dtype)
+            self.V = np.random.normal(size=dims, dtype=dtype)
         else:
-            self.Q = np.full((*dims, env.action_space.n), init_value)
-            self.V = np.full(dims, init_value)
+            self.Q = np.full((*dims, env.action_space.n), init_value, dtype=dtype)
+            self.V = np.full(dims, init_value, dtype=dtype)
     
-    def eps_greedy(self, s):
+    def eps_greedy(self, s: tuple | int) -> int:
         """It's the epsilon greedy policy. With probability epsilon selects any action
         randomly with the same probability, and with prob 1-epsilon, greedily selects
         the action and breaks ties arbitrarily.
@@ -43,8 +46,8 @@ class BaseAgent:
         else:
             return self.rnd_gen.choice(np.where(np.max(self.Q[s]) == self.Q[s])[0])
     
-    def reset(self, args):
+    def reset(self, args: dict):
         return
         
-    def step(self, s):
+    def step(self, s: tuple | int) -> tuple:
         return None, None, None

@@ -1,9 +1,11 @@
+from __future__ import annotations
+import gymnasium as gym
 import numpy as np
 
 from libs.utils.agent import BaseAgent
 
 class OffPolicyMCControl(BaseAgent):
-    def __init__(self, env, args):
+    def __init__(self, env: gym.Env, args: dict) -> None:
         super().__init__(env, args)
         self.Q -= 500
         # Behavior policy must return a tuple (action, probability of choosing that action)
@@ -11,13 +13,13 @@ class OffPolicyMCControl(BaseAgent):
         self.policy = np.argmax(self.Q, axis=-1)
         self.C = np.zeros_like(self.Q)
 
-    def behavior_policy(self, s):
+    def behavior_policy(self, s: tuple | int) -> tuple[int, float]:
         if np.random.uniform() > self.epsilon:
             return self.policy[s], 1-self.epsilon+self.epsilon/self.env.action_space.n
         
         return np.random.randint(self.env.action_space.n), self.epsilon/self.env.action_space.n
     
-    def generate_episode(self, s):
+    def generate_episode(self, s: tuple | int) -> list[tuple]:
         trajectory = []
 
         is_term = False
@@ -31,7 +33,7 @@ class OffPolicyMCControl(BaseAgent):
 
         return trajectory
     
-    def step(self, s):
+    def step(self, s: tuple | int) -> tuple[None, bool, int]:
         trajectory = self.generate_episode(s)
 
         G = 0.0

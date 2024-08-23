@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pickle
 import numpy as np
 
@@ -11,7 +12,10 @@ from monte_carlo.first_visit_prediction import FirstVisitMC
 from monte_carlo.exploring_starts import ExploringStarts
 from monte_carlo.off_policy_mc_control import OffPolicyMCControl
 
-def create_grids(data, usable_ace=0):
+def create_grids(
+        data: dict | np.ndarray,
+        usable_ace: int=0
+        ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     X, Y = np.meshgrid(np.arange(12, 22), np.arange(1, 11))
     Z = np.zeros(X.shape)
     for i in range(12, 22):
@@ -19,7 +23,10 @@ def create_grids(data, usable_ace=0):
             Z[i-12, j-1] = data[(i, j, usable_ace)]
     return X, Y, Z
 
-def create_policy_grid(policy, usable_ace=0):
+def create_policy_grid(
+        policy: dict | np.ndarray,
+        usable_ace: int=0
+        ) -> np.ndarray:
     X, Y = np.meshgrid(np.arange(12, 22), np.arange(1, 11))
     Z = np.apply_along_axis(
         lambda obs: policy[(obs[0], obs[1], usable_ace)],
@@ -45,12 +52,12 @@ def experiment_5_1():
     plot_3d(
         X_0, Y_0, Z_0,
         'Player sum', 'Dealer showing', 'State-value',
-        'No usable ace', './monte_carlo/results/5_1_no_usable.png')
+        'No usable ace', './monte_carlo/results/5_1_no_usable.png', {})
 
     plot_3d(
         X_1, Y_1, Z_1,
         'Player sum', 'Dealer showing', 'State-value',
-        'No usable ace', './monte_carlo/results/5_1_usable.png')
+        'No usable ace', './monte_carlo/results/5_1_usable.png', {})
 
 def experiment_5_2():
     print('Starting experiment for example 5.2')
@@ -69,25 +76,24 @@ def experiment_5_2():
     plot_3d(
         X_0, Y_0, Z_0,
         'Player sum', 'Dealer showing', 'State-value',
-        'No usable ace', './monte_carlo/results/5_2_no_usable.png')
+        'No usable ace', './monte_carlo/results/5_2_no_usable.png', {})
 
     plot_3d(
         X_1, Y_1, Z_1,
         'Player sum', 'Dealer showing', 'State-value',
-        'No usable ace', './monte_carlo/results/5_2_usable.png')
+        'No usable ace', './monte_carlo/results/5_2_usable.png', {})
 
+    args = {'x_ticks': list(range(12, 22)), 'y_ticks': ['A'] + list(range(2, 11)), 'cbar_ticks': [0, 1], 'cbar_labels': ['Stick', 'Hit']}
     plot_policy(
         policy_grid_0,
-        'Player sum', 'Dealer showing', range(12, 22),
-        ['A'] + list(range(2,11)), ['Stick', 'Hit'],
-        './monte_carlo/results/5_2_policy_no_usable.png'
+        'Player sum', 'Dealer showing', 'No usable ace',
+        './monte_carlo/results/5_2_policy_no_usable.png', args
     )
 
     plot_policy(
         policy_grid_1,
-        'Player sum', 'Dealer showing', range(12, 22),
-        ['A'] + list(range(2,11)), ['Stick', 'Hit'],
-        './monte_carlo/results/5_2_policy_usable.png'
+        'Player sum', 'Dealer showing', 'Usable ace',
+        './monte_carlo/results/5_2_policy_usable.png', args
     )
 
 def experiment_5_12():

@@ -1,7 +1,8 @@
+from __future__ import annotations
 from libs.envs.grid_world import GridWorldEnv
 
 class DynaMaze(GridWorldEnv):
-    def __init__(self, env_args):
+    def __init__(self, env_args: dict) -> None:
         super().__init__(env_args)
         self.iter_change = env_args.get('iter_change', 10000)
         self.iter = 0
@@ -9,11 +10,11 @@ class DynaMaze(GridWorldEnv):
         self.obstacles = set(map(tuple, env_args.get('obstacles', [])))
         self.obstacles_after_change = set(map(tuple, env_args.get('obstacles_after_change', [])))
     
-    def get_reward(self, s):
+    def get_reward(self, s: tuple | int) -> float:
         if self.is_terminal(s): return 1.0
         return 0.0
     
-    def step(self, action):
+    def step(self, action: int) -> tuple[tuple, float, bool]:
         """Overrides the step function of the GridWorldEnv. The agent moves the same way
         with the difference of having an obstacle. Move as in the GridWorldEnv and if it
         hits an obstacle, then the new state is the same as the previous one.
