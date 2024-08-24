@@ -6,6 +6,7 @@ from libs.utils.experiment import bandit_experiment
 from libs.envs.armed_testbed import ArmedTestbed
 
 from multi_armed_bandits.bandit import Bandit
+from multi_armed_bandits.gradient_bandit import GradientBandit
 
 def experiment_2_2():
     data = [
@@ -56,5 +57,23 @@ def experiment_2_4():
         './multi_armed_bandits/results/ucb_vs_epsilon_greedy_avg_rewards.png'
     )
 
+def experiment_2_5():
+    env_args = {'mean': 4.0}
+    data = [
+        bandit_experiment(ArmedTestbed, GradientBandit, env_args, {}, {}),
+        bandit_experiment(ArmedTestbed, GradientBandit, env_args, {'alpha': 0.4}, {}),
+        bandit_experiment(ArmedTestbed, GradientBandit, env_args, {'alpha': 0.1, 'baseline': False}, {}),
+        bandit_experiment(ArmedTestbed, GradientBandit, env_args, {'alpha': 0.4, 'baseline': False}, {}),
+    ]
+
+    chosen_opt = [i['chosen_opt'] for i in data]
+    plot_results(
+        np.arange(1000), chosen_opt,
+        'Steps', '% Optimal Action',
+        ['Gradient Bandit (a=0.1, baseline)', 'Gradient Bandit (a=0.4, baseline)',
+        'Gradient Bandit (a=0.1, no baseline)', 'Gradient Bandit (a=0.4, no baseline)'],
+        './multi_armed_bandits/results/gradient_bandit.png'
+    )
+
 if __name__ == '__main__':
-    experiment_2_4()
+    experiment_2_5()
