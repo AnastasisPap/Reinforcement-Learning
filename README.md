@@ -1,1 +1,229 @@
-# Reinforcement-Learning
+<a id="readme-top"></a>
+
+<br />
+<div align="center">
+  <h3 align="center">Reinforcement Learning Experiments</h3>
+</div>
+
+<!-- ABOUT THE PROJECT -->
+## About
+
+This repo reproduces mostly all experiments done in the book "Introduction to Reinforcement Learning" by Barto & Sutton, (sidenote: this is not the official code). It has been built in a way that an experiment can be done in a "plug and play" fashion, making it very easy to use any of the supported RL algorithms and Environments to create an experiment. Collecting statistics and making plots and graphs is also very easy to do.
+
+The experiments cover the following topics taken by the book:
+* Multi-armed Bandits
+* Dynamic Programming/Markov Decision Processes
+* Monte Carlo methods
+* Temporal Difference learning
+* N-step bootstrapping methods
+* Planning and learning methods
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Getting Started
+
+### Prerequisites
+
+This is an example of how to list things you need to use the software and how to install them.
+* Python >=3.8 (tested on 3.9.15)
+* Libraries
+    * Pickle
+    * Numpy
+    * Matplotlib
+    * Gymnasium
+    * Scipy
+    * Tqdm
+    * Pygame
+    * Seaborn
+
+<u><i>Suggestion:</i></u> use anaconda to avoid possible package errors.
+
+### Installation
+* Conda:
+   ```sh
+   conda install --yes --file ./path/to/requirements.txt
+   ```
+* PIP:
+   ```sh
+   pip install -r ./path/to/requirements.txt
+   ```
+* <b>Important</b>
+If errors like "libs.envs.blackjack.py is not found" appear, enter the following command in the CLI/Terminal:
+   * For Linux/Mac
+   ```sh
+   set PYTHONPATH=$(pwd)
+   ```
+    * For Windows follow the following [tutorial](https://realpython.com/add-python-to-path/).
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+## Usage
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+## Environments
+Each environment must have some required methods depending on the type of agent which will be used on. Specifically there are three types: environments for armed bandits, MDP agents and learning agents. Each environment takes in a python dictionary when initialized.
+
+### Armed bandits Environments:
+Available environments:
+* [Armed testbed](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/armed_testbed.py)
+
+Environment args:
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+| `n`  | `int`|  The number of arms.                     | `10` |
+| `mean`  | `float`|  The mean which will be used to generate the q* function. | `0` |
+| `var`  | `float`|  The variance which will be used to generate the q* function and the reward. | `1` |
+
+<br>
+
+To make a custom environment for armed bandits, the env must have the following methods:
+* `reset(seed)`: called at the start of each experiment.
+* `step(action)`: called at each iteration, takes in an action and returns the reward.
+
+### MDP Environments:
+Each MDP environment MUST have known dynamcis (transition probabilities) and known state space.
+
+Available environments:
+* [Car rental](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/car_rental.py)
+Environment args:
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`lambda_first`|`tuple(int,int)`| The lambdas used as the Poisson parameters for the first location. The first item is the lambda for requests and the second for returns|`(3,3)`|
+|`lambda_second`|`tuple(int,int)`| The lambdas used as the Poisson parameters for the second location. The first item is the lambda for requests and the second for returns|`(4,2)`|
+|`max_cars`|`int`|The maximum number of cars that can be held in each location.|`20`|
+|`max_cars_moved`|`int`|The maximum number of cars that can be moved in a day.|`5`|
+|`credit`|`int`|The credit given for each car that is rented.|`10`|
+|`cost`|`int`|The cost for moving a car from one location to the other.|`2`|
+|`min_prob`|`float`|To avoid extra computation, probabilities from Poisson sampling lower than the min_prob will not be considered.|`1e-6`|
+
+* [Coin flip gamble](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/coin_flip_gamble.py)
+Environment args:
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`max_capital`|`int`| The capital that the agent aims to reach (i.e. reaching this capital will end the game).|`100`|
+|`p`|`float in [0,1]`| The probability of winning the bet.|`0.4`|
+
+<br>
+
+To make a custom environment for MDP agents, the env must have the following methods:
+* `get_actions(state)`: returns all the possible actions the agent can take if they currently are at the given state.
+* `check_state_action(s,a)`: returns True if the given pair is possible to happen (for example (99,10) isn't possible for the gambler's problem), otherwise returns False.
+* `get_dynamics()`: returns a dictionary that maps to another dictionary which maps to a probability. The outer dictionary contains (state,action) pairs and the inner contains (state', reward) pairs. For example [(s,a)][(s',r)] = p means that if we currently are at state s and take action a, the probability of transitioning to state s' and taking reward r is equal to p.
+* `observation_space`: it's a list that contains all the possible valid states.
+
+### Learning Environments
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+Available Environments:
+* [Blackjack](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/blackjack.py)
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`natural`|`bool`| Whether to give an additional reward for starting with a natural blackjack (taken from gymlibrary documentation).|`False`|
+|`sab`|`boo`| Whether to follow the exact rules outlined in the book by Sutton and Barto (taken from gymlibrary documentation).|`False`|
+
+* [Random Walk](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/random_walk.py)
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`n`|`int`| Number of states|`5`|
+|`left_r`|`float`| Reward given when reaching the leftmost state.|`0`|
+|`right_r`|`float`| Reward given when reaching the rightmost state.|`1`|
+
+* [Racetrack](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/racetrack.py)
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`dimensions`|`tuple(int,int)`| The dimensions of the racetrack as a rectangle.|`(32,17)`|
+|`size`|`int`| Used to scale the grid squares when rendering the game using pygame.|`20`|
+|`render_mode`|`'human' or None`| If human then the game is rendered using pygame.|`None`|
+|`agent_marker`|`int`| In the grid array, this is used to mark the location of the agent.|`4`|
+|`start_states`|`list[tuple(int,int)]`| Contains the locations of all the start states.|`[(31,3),(31,4),(31,5),(31,6),(31,7),(31,8)]`|
+|`goal_states`|`list[tuple(int,int)]`| Contains the locations of all the goal states.|`[(0,16),(1,16),(2,16),(3,16),(4,16),(5,16)]`|
+|`boundaries`|`list[tuple(int,int)]`| Contains the locations of all the boundaries (i.e. if the agent steps on these, the game resets).|omitted|
+
+* [Grid World](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/grid_world.py)
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`dimensions`|`tuple(int,int)`| The dimensions of the grid world.|`(6,9)`|
+|`start_state`|`tuple(int,int)`| The location of the start state.|`(2,0)`|
+|`goal_state`|`tuple(int,int)`| The location of the goal state.|`(0,8)`|
+
+* [Cliff Walk](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/cliff_walk.py)
+
+**Along with the same parameters as the Grid World Environment, it contains:**
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`cliff`|`list[tuple(int,int)]`| The locations of the cliff (i.e. the game restarts if the agent steps on these).|omitted|
+|`seed`|`int`| Seed used for reproducibility.|`0`|
+
+* [Windy Grid World](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/windy_grid_world.py)
+
+**Along with the same parameters as the Grid World Environment, it contains:**
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`Wind strength`|`list[int]`| The wind strength for each column of the grid world.|omitted|
+
+* [Dyna Maze](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/envs/dyna_maze.py)
+
+**Along with the same parameters as the Grid World Environment, it contains:**
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`iter_change`|`int`| The iteration in which the obstacle change happens (if no changes happens, set it at infinity).|`10000`|
+|`obstacles`|`list[tuple(int,int)]`| The locations of all obstacles.|`[ ]`|
+|`obstacles_after_change`|`list[tuple(int,int)]`| The locations of all obstacles AFTER the obstacle change happens.|`[ ]`|
+
+To create a custom learning environment the following methods must be present:
+* `env_dimensions` which is used to initialize the shape of the state-value, state-action functions.
+* `action_space` which is the space of all possible actions.
+* `reset(seed)` which is called at the start of each episode.
+* `is_terminal(s)` which returns True if s is a terminal state.
+* `step(a)` takes action a and returns: (next state, reward, if next state is terminal or not)
+
+### Agents
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+## Contact
+
+Anastasios Papapanagiotou - anastasis.papapanagiotou@gmail.com
+
+Project Link: [https://github.com/AnastasisPap/Reinforcement-Learning](https://github.com/your_username/repo_name)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Sources
+* MD template taken from this [repo](https://github.com/othneildrew/Best-README-Template/blob/main/README.md)
+* [Reinforcement learning: An Introduction, 2nd edition](https://www.academia.edu/download/38529120/9780262257053_index.pdf)
