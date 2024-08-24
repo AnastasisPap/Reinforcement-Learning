@@ -11,6 +11,8 @@ class SimpleBandit:
 
         self.env = env
         self.t = 0
+
+        self.alpha = args.get('alpha', None)
     
     def step(self, s=None):
         if np.random.uniform() < self.epsilon:
@@ -21,6 +23,6 @@ class SimpleBandit:
         
         r = self.env.step(a)
         self.N[a] += 1
-        self.Q[a] += (r - self.Q[a]) / self.N[a]
+        self.Q[a] += (r - self.Q[a]) * (1/self.N[a] if self.alpha is None else self.alpha)
 
         return a, r

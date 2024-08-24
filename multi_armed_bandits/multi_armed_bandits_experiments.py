@@ -30,5 +30,18 @@ def experiment_2_2():
         './multi_armed_bandits/results/simple_bandit_opt_perc.png'
     )
 
+def experiment_2_3():
+    data = [
+        bandit_experiment(ArmedTestbed, SimpleBandit, {}, {'alpha': 0.1, 'init_value': 5.0, 'epsilon': 0.0}, {}),
+        bandit_experiment(ArmedTestbed, SimpleBandit, {}, {'alpha': 0.1, 'epsilon': 0.1}, {}),
+    ]
+
+    chosen_opt = [i['chosen_opt'] for i in data]
+    plot_results(
+        np.arange(1000), chosen_opt,
+        'Steps', '% Optimal action', ['Optimistic Greedy', 'Epsilon-Greedy 0.1'],
+        './multi_armed_bandits/results/action_value_method_opt_init.png'
+    )
+
 if __name__ == '__main__':
-    experiment_2_2()
+    experiment_2_3()
