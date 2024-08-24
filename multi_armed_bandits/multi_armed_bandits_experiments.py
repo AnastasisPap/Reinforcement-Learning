@@ -5,13 +5,13 @@ from libs.utils.experiment import bandit_experiment
 
 from libs.envs.armed_testbed import ArmedTestbed
 
-from multi_armed_bandits.simple_bandit import SimpleBandit
+from multi_armed_bandits.bandit import Bandit
 
 def experiment_2_2():
     data = [
-        bandit_experiment(ArmedTestbed, SimpleBandit, {}, {'epsilon': 0.0}, {}),
-        bandit_experiment(ArmedTestbed, SimpleBandit, {}, {'epsilon': 0.1}, {}),
-        bandit_experiment(ArmedTestbed, SimpleBandit, {}, {'epsilon': 0.01}, {})
+        bandit_experiment(ArmedTestbed, Bandit, {}, {'epsilon': 0.0}, {}),
+        bandit_experiment(ArmedTestbed, Bandit, {}, {'epsilon': 0.1}, {}),
+        bandit_experiment(ArmedTestbed, Bandit, {}, {'epsilon': 0.01}, {})
     ]
     labels = ['Greedy', 'Epsilon-Greedy 0.1', 'Epsilon-Greedy 0.01']
 
@@ -32,8 +32,8 @@ def experiment_2_2():
 
 def experiment_2_3():
     data = [
-        bandit_experiment(ArmedTestbed, SimpleBandit, {}, {'alpha': 0.1, 'init_value': 5.0, 'epsilon': 0.0}, {}),
-        bandit_experiment(ArmedTestbed, SimpleBandit, {}, {'alpha': 0.1, 'epsilon': 0.1}, {}),
+        bandit_experiment(ArmedTestbed, Bandit, {}, {'step_type': 'constant', 'init_value': 5.0, 'epsilon': 0.0}, {}),
+        bandit_experiment(ArmedTestbed, Bandit, {}, {'step_type': 'constant', 'epsilon': 0.1}, {}),
     ]
 
     chosen_opt = [i['chosen_opt'] for i in data]
