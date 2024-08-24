@@ -224,9 +224,83 @@ To create a new <b>MDP agent</b> the class must:
 
 To create a new <b>general learning agent</b> the class must:
 * Inherit from `libs.utils.agent.BaseAgent` and pass the env and args during initialization.
-* Must have a `step(s)` function which takes in a state and produces a triplet (next state, is next state terminal, reward) 
+* Must have a `step(s)` function which takes in a state and produces a triplet (next state, is next state terminal, reward).
+* For custom parameters that are abscent from BaseAgent, they can be set by using the args dictionary.
+
+[BaseAgent](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/utils/agent.py) args:
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`epsilon`|`float`| Agents that use ε-greedy policies.|`0.1`|
+|`gamma`|`float`| The discount.|`1.0`|
+|`alpha`|`float`| The learning rate.|`0.1`|
+|`init_value`|`float or 'normal' or 'uniform'`| If it's a float, then the state-value and state-action functinos are initialized with this value. If it's uniform then they are initialized using the uniform distribution and if it's normal then they are initialized using the normal distribution.|`0.0`|
+|`dtype`|`type`| The dtype of the state-value and state-action functions.|`float`|
+
 
 Any agent that inherits `BaseAgent` can override its methods.
+
+### Experiments
+There is an experiment method for each type of agent there is, so there is one for bandits, MDP, general learning agents. Each experiment function works in a similar way. They take in the Environment Class, Agent Class, and experiment, environment, agent args and they return a data object.
+
+Currently they store a variety of statistics which are measured in between episodes and iterations. They initialize the environment, agent and use the step function of the agent to finish the episode.
+
+When deciding which function to use if the agent you want to use isn't a bandit or MDP, then it's the general experiment.
+
+[General Experiment](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/utils/experiment.py)
+Experiment args:
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`repetitions`|`int`| The number of repetitions to run an experiment (the agent will be completely initialized each time).|`1`|
+|`episodes`|`int`| The number of episodes for each repetition.|`10000000`|
+|`max_steps`|`int`| The maximum number of agent steps for each repetition.|`10000000`|
+|`true_values`|`list[float]`| The true values of the state-action/state-value functions. This is optional and only needed if we need to compare the learned Q and the real Q.|None|
+
+Experiment Statistics:
+
+| Name | Description |
+|----------------------|------------------------------------------------------------------------|
+|`avg_steps_per_episode`| The average (average in the number of repeitions) number of steps it took to finish an episode.|
+|`cum_reward`| The average (average in the number of repetitions) cumulative reward for each repetition.|
+|`episodes_per_time_step`|The average (average in the number of repetitions) number of episodes before reaching max iterations.|
+|`cum_reward_per_episode`|The average (average in the number of repetitions) cumulative reward within each episode.|
+|`rms_error`|The average (average in the number of repetitions) Root Mean Squared Error per episode.|
+|`policy_per_rep`|Stores the policy of the agent for each repetition|
+|`estimated_values_per_episode`|Stores the average (average in the number of repetitions) value function per episode.|
+
+
+[DP Experiment](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/utils/experiment.py)
+Experiment Args
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`update_freq`|`int`| The frequency at which a print statement will happen to update the user.|`1`|
+|`store_data`|`boo`| If true then the result of the experiment is stored as a pickle file in the given data path.|`False`|
+|`data_path`|`str`| The path at which the data will be stored at.|Required if store_data is True|
+
+Experiment Statistics:
+
+| Name | Description |
+|----------------------|------------------------------------------------------------------------|
+|`value`| The value function at the last iteration|
+|`policies`| The policy of the agent at each iteration (until the policy becomes stable).|
+|`sweeps`|The value function at each sweep.|
+
+[Bandit Experiment](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/libs/utils/experiment.py)
+Experiment Args
+
+| Parameter     | Type  | Description                                             | Default Value |
+|---------------|-------|---------------------------------------------------------|---------------|
+|`Runs`|`int`| The number of runs.|`1000`|
+|`iterations`|`int`| The number of iterations (for each iteration there are # runs).|`2000`|
+
+Experiment Statistics:
+
+| Name | Description |
+|----------------------|------------------------------------------------------------------------|
+|`avg_rewards`| The average rewards (average in the number of iterations).|
+|`chosen_opt`| Average number of times the agent chose the optimal value (average in the numbe of iterations).|
 
 ## Contributing
 
