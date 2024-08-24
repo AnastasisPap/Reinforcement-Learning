@@ -190,6 +190,43 @@ To create a custom learning environment the following methods must be present:
 * `step(a)` takes action a and returns: (next state, reward, if next state is terminal or not)
 
 ### Agents
+For each learning method, there can be multiple agent algorithms. Specifically:
+* Multi-armed Bandits
+  * [Simple bandit](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/multi_armed_bandits/bandit.py)
+  * [UCB](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/multi_armed_bandits/bandit.py)
+  * [Gradient Bandit](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/multi_armed_bandits/gradient_bandit.py)
+* Dynamic Programming
+  * [Policy Iteration](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/dynamic_programming/mdp_policy_iteration.py)
+  * [Value Iteration](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/dynamic_programming/value_iteration.py)
+* Monte Carlo
+  * [First Visit Prediction](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/monte_carlo/first_visit_prediction.py)
+  * [Exploring Starts](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/monte_carlo/exploring_starts.py)
+  * [Off-policy Monte Carlo Control](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/monte_carlo/off_policy_mc_control.py)
+* Temporal Difference learning
+  * [TD(0)](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/temporal_difference_learning/td_zero.py)
+  * [Sarsa](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/temporal_difference_learning/sarsa.py)
+  * [Q-Learning](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/temporal_difference_learning/q_learning.py)
+* N-step Bootstrapping
+  * [N-step TD](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/n_step_bootstrapping/n_step_td.py)
+* Planning and Learning methods
+  * [Dyna-Q](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/planning_and_learning/dynaQ.py)
+  * [Dyna-Q+](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/planning_and_learning/dynaQPlus.py)
+  * [Prioritized Sweeping](https://github.com/AnastasisPap/Reinforcement-Learning/blob/main/planning_and_learning/prioritized_sweeping.py)
+
+To create a new <b>bandit algorithm</b> the class must contain:
+* `step()` which takes a step and returns a tuple (action, reward) which is the action it selected and the reward it got by taking the action.
+  
+To create a new <b>MDP agent</b> the class must:
+* Inherit from `libs.utils.agent.BaseAgent` and pass the env and args during initialization.
+* Contain the method `iteration()`, which returns True iff the policy is stable.
+* Contains `policy` as a variable which is a dictionary mapping states to actions.
+* Contains `sweeps` list which store the state value function at each sweep.
+
+To create a new <b>general learning agent</b> the class must:
+* Inherit from `libs.utils.agent.BaseAgent` and pass the env and args during initialization.
+* Must have a `step(s)` function which takes in a state and produces a triplet (next state, is next state terminal, reward) 
+
+Any agent that inherits `BaseAgent` can override its methods.
 
 ## Contributing
 
@@ -210,7 +247,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
