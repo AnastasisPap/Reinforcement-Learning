@@ -141,6 +141,39 @@ def dp_experiment(
 
     return data
 
+def bandit_experiment(
+        EnvClass: object,
+        AgentClass: object,
+        env_args: dict,
+        agent_args: dict,
+        experiment_args: dict) -> dict:
+
+    data = {}
+    runs = experiment_args.get('runs', 1000)
+    iterations = experiment_args.get('iterations', 2000)
+
+    rewards = np.zeros((iterations, runs))
+    chosen_opt = np.zeros((iterations, runs))
+    env = EnvClass(env_args)
+
+    for i in tqdm(range(iterations)):
+        env.reset()
+        opt_actions = np.argmax(env.q_star)
+        agent = AgentClass(env, agent_args)
+
+        for j in range(runs):
+            a, r = agent.step()
+            if a == opt_actions:
+                chosen_opt[i,j] += 1
+            rewards[i,j] = r
+    
+    avg_rewards = np.mean(rewards, axis=0)
+    chosen_opt = np.mean(chosen_opt, axis=0)
+    data['avg_rewards'] = avg_rewards
+    data['chosen_opt'] = chosen_opt
+
+    return data
+
 def load_experiment(path):
     with open(path, 'rb') as f:
         data = pickle.load(f)
