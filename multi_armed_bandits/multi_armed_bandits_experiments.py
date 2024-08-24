@@ -43,5 +43,18 @@ def experiment_2_3():
         './multi_armed_bandits/results/action_value_method_opt_init.png'
     )
 
+def experiment_2_4():
+    data = [
+        bandit_experiment(ArmedTestbed, Bandit, {}, {'bandit_type': 'ucb', 'c': 2}, {}),
+        bandit_experiment(ArmedTestbed, Bandit, {}, {'epsilon': 0.1}, {}),
+    ]
+
+    avg_reward = [i['avg_rewards'] for i in data]
+    plot_results(
+        np.arange(1000), avg_reward,
+        'Steps', 'Avg reward', ['UCB', 'Epsilon-Greedy 0.1'],
+        './multi_armed_bandits/results/ucb_vs_epsilon_greedy_avg_rewards.png'
+    )
+
 if __name__ == '__main__':
-    experiment_2_3()
+    experiment_2_4()

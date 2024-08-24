@@ -13,16 +13,21 @@ class Bandit:
         self.t = 0
 
         self.alpha = args.get('alpha', 0.1)
+        self.c = args.get('c', 2)
         
         self.bandit_type = args.get('bandit_type', 'simple')
         self.step_type = args.get('step_type', 'sample_avg')
     
     def step(self):
-        if np.random.uniform() < self.epsilon:
-            a = np.random.randint(self.env.n)
+        if self.bandit_type == 'ucb':
+            # If N is 0, then the action is maximizing
+            a = np.argmax(self.Q + self.c * np.sqrt(np.log(self.t) / self.N))
         else:
-            actions = np.where(self.Q == np.max(self.Q))[0]
-            a = np.random.choice(actions)
+            if np.random.uniform() < self.epsilon:
+                a = np.random.randint(self.env.n)
+            else:
+                actions = np.where(self.Q == np.max(self.Q))[0]
+                a = np.random.choice(actions)
         
         r = self.env.step(a)
         self.N[a] += 1
@@ -30,5 +35,7 @@ class Bandit:
             step_size = 1/self.N[a]
         else: step_size = self.alpha
         self.Q[a] += step_size * (r - self.Q[a])
+
+        self.t += 1
 
         return a, r
