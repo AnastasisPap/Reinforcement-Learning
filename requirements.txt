@@ -1,0 +1,7 @@
+numpy
+matplotlib
+gymnasium
+scipy
+tqdm
+pygame
+seaborn
