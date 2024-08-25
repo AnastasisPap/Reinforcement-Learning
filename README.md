@@ -1,5 +1,3 @@
-<a id="readme-top"></a>
-
 <br />
 <div align="center">
   <h3 align="center">Reinforcement Learning Experiments</h3>
@@ -17,7 +15,6 @@ The experiments cover the following topics taken by the book:
 * Temporal Difference learning
 * N-step bootstrapping methods
 * Planning and learning methods
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Getting Started
 
@@ -26,7 +23,6 @@ The experiments cover the following topics taken by the book:
 This is an example of how to list things you need to use the software and how to install them.
 * Python >=3.8 (tested on 3.9.15)
 * Libraries
-    * Pickle
     * Numpy
     * Matplotlib
     * Gymnasium
@@ -35,13 +31,9 @@ This is an example of how to list things you need to use the software and how to
     * Pygame
     * Seaborn
 
-<u><i>Suggestion:</i></u> use anaconda to avoid possible package errors.
+<u><i>Suggestion:</i></u> use a conda environment to avoid possible package errors.
 
 ### Installation
-* Conda:
-   ```sh
-   conda install --yes --file ./path/to/requirements.txt
-   ```
 * PIP:
    ```sh
    pip install -r ./path/to/requirements.txt
@@ -53,14 +45,6 @@ If errors like "libs.envs.blackjack.py is not found" appear, enter the following
    set PYTHONPATH=$(pwd)
    ```
     * For Windows follow the following [tutorial](https://realpython.com/add-python-to-path/).
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-## Usage
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ## Environments
@@ -315,16 +299,10 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ## Contact
@@ -332,8 +310,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Anastasios Papapanagiotou - anastasis.papapanagiotou@gmail.com
 
 Project Link: [https://github.com/AnastasisPap/Reinforcement-Learning](https://github.com/your_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Sources
 * MD template taken from this [repo](https://github.com/othneildrew/Best-README-Template/blob/main/README.md)
