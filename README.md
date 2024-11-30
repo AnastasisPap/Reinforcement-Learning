@@ -42,7 +42,7 @@ This is an example of how to list things you need to use the software and how to
 If errors like "libs.envs.blackjack.py is not found" appear, enter the following command in the CLI/Terminal:
    * For Linux/Mac
    ```sh
-   set PYTHONPATH=$(pwd)
+   export PYTHONPATH=$(pwd)
    ```
     * For Windows follow the following [tutorial](https://realpython.com/add-python-to-path/).
 
